@@ -1,0 +1,21 @@
+{
+  "name": "Jobify",
+  "version": "1.0.0",
+  "description": "Jobify chat bot for Telegram",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EA2017G2/mean-template.git"
+  },
+  "author": "Eloi Carracedo",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "dotenv": "4.0.0",
+    "express": "4.16.2",
+    "method-override": "2.3.10"
+  }
+}
