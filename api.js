@@ -34,7 +34,7 @@ var server = app.listen(port, function () {
 
 app.get('/test', function(req, res){
     var args = {
-        headers : { "Authorization" : "Basic N2I5ZjMwMGNiZjUxNGNhOGJjOGIxMDI3NTk5OWE2ZGQ6eHFKVzBKbEJvcjJrUlVBbG5Pd050Z1U2RlNlT3dGUmtkQXJjVEpyUWI0UXg4ZkJCSTg=,Bearer 1569c4ec-9d83-412d-aa28-14edcb693bd6"}
+        headers : { "Authorization" : "Basic N2I5ZjMwMGNiZjUxNGNhOGJjOGIxMDI3NTk5OWE2ZGQ6eHFKVzBKbEJvcjJrUlVBbG5Pd050Z1U2RlNlT3dGUmtkQXJjVEpyUWI0UXg4ZkJCSTg=,Bearer 9d7aceca-d575-400d-b647-c6b500ed6ce9"}
     };
 
     client.get("https://api.infojobs.net/api/1/curriculum/419133b7-8d17-480d-91a8-f0b9cb6a609b/cvtext", args, function (data, response) {
