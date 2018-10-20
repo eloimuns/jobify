@@ -1,11 +1,10 @@
 const Telegraf = require('telegraf')
 const Extra = require('telegraf/extra')
 const Markup = require('telegraf/markup')
+const api = require('./api')
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 var i = 0;
-
-
 
 
 bot.help((ctx) => ctx.reply('Send me a sticker'))
@@ -127,6 +126,17 @@ bot.action(/.+/, (ctx) => {
   return ctx.answerCbQuery(`Oh, ${ctx.match[0]}! Great choice`)
 })
 
+bot.hears('getcvs', (ctx) => {
+      ctx.reply("CV List");
+      api.getCvs(function(res) {
+        for (var i = 0; i < res.length; i++)
+        {
+          var Principal = res[i].principal ? 'Yes' : 'No';
+          console.log(res);
+          ctx.reply(i+1 + " - CV Name: " + res[i].name +  " Is CV Principal: " + Principal);
+        }
+      });
+})
 
 
 
@@ -212,7 +222,7 @@ bot.hears('⭐️ Experience', ({ reply }) => {
 })
 
 bot.hears('📚 Studies', (ctx) => {
-  return ctx.reply('Add your studies to succes!', 
+  return ctx.reply('Add your studies to succes!',
   Markup.keyboard([
       Markup.callbackButton('🎓 Degree', '🎓 Degree'),
       Markup.callbackButton('🏛 Institution', '🏛 Institution'),
