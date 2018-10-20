@@ -16,6 +16,8 @@ var applications = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
 var currentApplication = 0;
+var apply_data = [];
+var applaying = false;
 
 var states = {
   companyEdit : false,
@@ -82,6 +84,11 @@ bot.action(/.+/, (ctx) => {
         .resize()
         .extra())
     }, cvs[0]);
+  } else if (ctx.match[0].startsWith('app_cv'))
+  {
+    currentCV = ctx.match[0].substr(ctx.match[0].length - 1);
+    //Get Questions
+    api.getQuestions
   } else   if (ctx.match[0].startsWith('ex'))  {
       currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
       ctx.reply('Select item to modify', Markup
@@ -112,13 +119,29 @@ bot.action(/.+/, (ctx) => {
           currentApplication = ctx.match[0].substr( ctx.match[0].length - 1);
           //New Application
           //CV Code
+          apply_data = [];
           api.getCvs(function(res) {
               var arr = [];
               for (var i = 0; i < res.length; i++)
               {
                 var Principal = res[i].principal ? 'Yes' : 'No';
-                arr.push(Markup.callbackButton(" - CV Name: " + res[i].name +  " Is CV Principal: " + Principal, "cv" + i, res.code));
-                cvs.push(res[i].code);
+                arr.push(Markup.callbackButton(" - CV Name: " + res[i].name +  " Is CV Principal: " + Principal, "app_cv" + i, res.code));
+              }
+              ctx.reply("Select CV to apply", Extra.HTML().markup((m) =>
+                  m.inlineKeyboard(arr)
+            ))
+          });
+        }
+        else if (ctx.match[0].startsWith('app_cv')) {
+          //Get Questions
+          currentCV = ctx.match[0].substr( ctx.match[0].length - 1);
+          apply_data.curriculumCode = cvs[currentCV];
+          api.getQuestions(function(res) {
+              var arr = [];
+              for (var i = 0; i < res.length; i++)
+              {
+                var Principal = res[i].principal ? 'Yes' : 'No';
+                arr.push(Markup.callbackButton(" - CV Name: " + res[i].name +  " Is CV Principal: " + Principal, "app_cv" + i, res.code));
               }
               ctx.reply("Select CV to apply", Extra.HTML().markup((m) =>
                   m.inlineKeyboard(arr)
