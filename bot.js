@@ -2,6 +2,11 @@ const Telegraf = require('telegraf')
 const Extra = require('telegraf/extra')
 const Markup = require('telegraf/markup')
 const api = require('./api')
+const session = require('telegraf/session')
+const Stage = require('telegraf/stage')
+const Scene = require('telegraf/scenes/base')
+const { leave } = Stage
+
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 var i = 0;
@@ -16,6 +21,9 @@ bot.hears('count', (ctx) => ctx.reply(i=i+1))
 bot.use(Telegraf.log())
 
 var cvs = [];
+var exps = [];
+var currentCV = 0;
+var currentExperienceEdit = 0;
 
 bot.command('onetime', ({ reply }) =>
   reply('One time keyboard', Markup
@@ -141,30 +149,50 @@ bot.hears('📄  CV', (ctx) => {
 
 bot.action(/.+/, (ctx) => {
   //return ctx.answerCbQuery(`Oh, ${ctx.match[0]}! Great choice`)
-  if (ctx.match[0] == "cv0")
+  if (ctx.match[0].startsWith('cv'))
   {
+
+    currentCV = ctx.match[0].substr(ctx.match[0].length - 1);
     api.getCV(function(res) {
-      return ctx.reply(res.cvtexts, Extra.markup(
-        Markup.keyboard(['Edit'])
-      ))
+      ctx.reply('This is your CV, here you can modify it!', Markup
+        .keyboard([
+          ['⭐️ Experience', '📚 Studies'],
+          ['📖 Languages', '🏅 Knowledge'],
+          ['🗄 Extra information', '📑 Employment status'],
+          ['🏠']
+        ])
+        .oneTime()
+        .resize()
+        .extra())
     }, cvs[0]);
-  }
+  } else   if (ctx.match[0].startsWith('ed'))  {
+      currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
+      ctx.reply('Select item to modify', Markup
+        .keyboard([
+          ['🏭 Company', '👨‍💼 Position'],
+          ['🏆 Level', 'Category'],
+          ['Subcategory', '🔙']
+        ])
+        .oneTime()
+        .resize()
+        .extra()
+      )
+    }
 })
 
 
 
+bot.hears('🏭 Company', (ctx) => {
+  ctx.reply((exps[currentExperienceEdit] != null ? exps[currentExperienceEdit].company : 'a'))
+  ctx.scene != null ? ctx.scene.enter('editcompany') : '';
+})
 
 
-
-
-
-
-
-
-
-
-
-
+const editcompany = new Scene('editcompany')
+editcompany.leave((ctx) => ctx.reply('Done'))
+editcompany.on('message', (ctx) => {
+  ctx.reply(ctx.mesage)
+})
 
 
 
@@ -220,17 +248,22 @@ bot.hears('🔙', (ctx) => {
 
 
 
-bot.hears('⭐️ Experience', ({ reply }) => {
-  return reply('Add your job experience!', Markup
-    .keyboard([
-      ['🏭 Company', '👨‍💼 Position'],
-      ['🏆 Level', 'Category'],
-      ['Subcategory', '🔙']
-    ])
-    .oneTime()
-    .resize()
-    .extra()
-  )
+bot.hears('⭐️ Experience', (ctx) => {
+  api.getExperiencies(function(res) {
+    exps = res.experience;
+    for (var i = 0; i < res.experience.length; i++)
+    {
+      ctx.reply("Company: " + res.experience[i].company + "\n" +
+                "Job title: " + res.experience[i].job + "\n" +
+                "Starting date: " + res.experience[i].startingDate + "\n" +
+                "Finishing date: " + (res.experience[i].FinishingDate || '') + "\n" +
+                "On course: " + res.experience[i].onCourse + "\n", Extra.HTML().markup((m) =>
+          m.inlineKeyboard([
+            m.callbackButton('Edit','ed' + i)])
+        ))
+    }
+
+  },cvs[currentCV]);
 })
 
 bot.hears('📚 Studies', (ctx) => {
@@ -317,17 +350,6 @@ bot.hears('💾 Data', (ctx) => {
     )
     })
 
-
-
-
-
-
-
-
-
-
-
-
 bot.hears('🏠', (ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
        Markup.keyboard([
@@ -338,7 +360,14 @@ bot.hears('🏠', (ctx) => {
   )
 })
 
+// Create scene manager
+const stage = new Stage()
+stage.command('cancel', leave())
 
+// Scene registration
+stage.register(editcompany)
 
+bot.use(session())
+bot.use(stage.middleware())
 
 bot.startPolling();
