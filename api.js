@@ -37,6 +37,12 @@ var args = {
     headers : { "Authorization" : "Basic N2I5ZjMwMGNiZjUxNGNhOGJjOGIxMDI3NTk5OWE2ZGQ6eHFKVzBKbEJvcjJrUlVBbG5Pd050Z1U2RlNlT3dGUmtkQXJjVEpyUWI0UXg4ZkJCSTg=, Bearer " + token,
   "Content-Type" : "application/json"}
 };
+
+var getCandidate = function(callback){
+  client.get("https://api.infojobs.net/api/2/candidate", args, function(data,response) {
+    callback(data);
+  });
+}
 var getCvs = function(callback){
     client.get("https://api.infojobs.net/api/2/curriculum", args, function (data, response) {
         callback(data);
@@ -139,7 +145,7 @@ var getQuestions = function(callback, offer){
 }
 
 
-
+module.exports.getCandidate = getCandidate;
 module.exports.getCvs = getCvs;
 module.exports.getCV = getCV;
 module.exports.setCV = setCV;
