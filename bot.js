@@ -1,6 +1,7 @@
 const Telegraf = require('telegraf')
 const Extra = require('telegraf/extra')
 const Markup = require('telegraf/markup')
+const api = require('./api')
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 var i = 0;
@@ -14,8 +15,6 @@ bot.start((ctx) => {
     ]).extra()
   )
 })
-
-
 
 bot.help((ctx) => ctx.reply('Send me a sticker'))
 bot.on('sticker', (ctx) => ctx.reply('👍'))
@@ -136,7 +135,17 @@ bot.action(/.+/, (ctx) => {
   return ctx.answerCbQuery(`Oh, ${ctx.match[0]}! Great choice`)
 })
 
-
+bot.hears('getcvs', (ctx) => {
+      ctx.reply("CV List");
+      api.getCvs(function(res) {
+        for (var i = 0; i < res.length; i++)
+        {
+          var Principal = res[i].principal ? 'Yes' : 'No';
+          console.log(res);
+          ctx.reply(i+1 + " - CV Name: " + res[i].name +  " Is CV Principal: " + Principal);
+        }
+      });
+})
 
 
 
@@ -174,7 +183,7 @@ bot.action(/.+/, (ctx) => {
 bot.hears('📄  CV', (ctx) => {
   return ctx.reply('This is your CV, here you can modify it!', Markup
     .keyboard([
-      ['⭐️ Experience', '📚 Studies'], 
+      ['⭐️ Experience', '📚 Studies'],
       ['📖 Languages', 'Knowledge'],
       ['Extra information', 'Employment situation'],
       ['🏠']
@@ -188,7 +197,7 @@ bot.hears('📄  CV', (ctx) => {
 bot.hears('🔙', (ctx) => {
   return ctx.reply('This is your CV, here you can modify it!', Markup
     .keyboard([
-      ['⭐️ Experience', '📚 Studies'], 
+      ['⭐️ Experience', '📚 Studies'],
       ['📖 Languages', 'Knowledge'],
       ['Extra information', 'Employment situation'],
       ['🏠']
@@ -205,7 +214,7 @@ bot.hears('🔙', (ctx) => {
 bot.hears('⭐️ Experience', ({ reply }) => {
   return reply('Add your job experience!', Markup
     .keyboard([
-      ['Company', 'Position'], 
+      ['Company', 'Position'],
       ['Level', 'Category'],
       ['Subcategory', '🔙']
     ])
@@ -220,7 +229,7 @@ bot.hears('⭐️ Experience', ({ reply }) => {
 
 
 bot.hears('📚 Studies', (ctx) => {
-  return ctx.reply('Add your studies to succes!', 
+  return ctx.reply('Add your studies to succes!',
   Markup.keyboard([
       Markup.callbackButton(' Degree', ' Degree'),
       Markup.callbackButton(' Institution', ' Institution'),
@@ -233,7 +242,7 @@ bot.hears('📚 Studies', (ctx) => {
   })
 
   bot.hears('📖 Languages', (ctx) => {
-    return ctx.reply('How many languages you know? ', 
+    return ctx.reply('How many languages you know? ',
     Markup.keyboard([
         Markup.callbackButton(' Language', ' Language'),
         Markup.callbackButton(' Level', 'Level'),

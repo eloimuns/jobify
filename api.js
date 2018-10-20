@@ -7,7 +7,7 @@ var app = express();
 var keys = require("./key")
 var request = require('request');
 
-var Client = require('node-rest-client').Client; 
+var Client = require('node-rest-client').Client;
 var client = new Client();
 
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -36,17 +36,13 @@ var server = app.listen(port, function () {
 var args = {
     headers : { "Authorization" : "Basic N2I5ZjMwMGNiZjUxNGNhOGJjOGIxMDI3NTk5OWE2ZGQ6eHFKVzBKbEJvcjJrUlVBbG5Pd050Z1U2RlNlT3dGUmtkQXJjVEpyUWI0UXg4ZkJCSTg=, Bearer " + token}
 };
-
-
 var getCvs = function(callback){
     client.get("https://api.infojobs.net/api/2/curriculum", args, function (data, response) {
         callback(data);
     });
 }
 
-getCvs(function(result){
-    console.log(result)
-});
+module.exports.getCvs = getCvs;
 /*
 app.get('/test', function(req, res){
 
