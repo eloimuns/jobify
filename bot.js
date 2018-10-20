@@ -10,6 +10,7 @@ var i = 0;
 
 var cvs = [];
 var exps = [];
+var edus = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
 
@@ -64,7 +65,7 @@ bot.action(/.+/, (ctx) => {
         .resize()
         .extra())
     }, cvs[0]);
-  } else   if (ctx.match[0].startsWith('ed'))  {
+  } else   if (ctx.match[0].startsWith('ex'))  {
       currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
       ctx.reply('Select item to modify', Markup
         .keyboard([
@@ -77,6 +78,29 @@ bot.action(/.+/, (ctx) => {
         .extra()
       )
     }
+    else   if (ctx.match[0].startsWith('ed'))  {
+        currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
+        /*ctx.reply('Select item to modify', Markup
+          .keyboard([
+            ['🏭 Company', '👨‍💼 Position'],
+            ['🏆 Level', 'Category'],
+            ['Subcategory', '🔙']
+          ])
+          .oneTime()
+          .resize()
+          .extra()
+        )*/
+        ctx.reply('Select item to modify',
+        Markup.keyboard([
+            Markup.callbackButton('🎓 Degree', '🎓 Degree'),
+            Markup.callbackButton('🏛 Institution', '🏛 Institution'),
+            Markup.callbackButton('🔙', '🔙'),
+            ])
+          .oneTime()
+          .resize()
+          .extra()
+        )
+      }
 })
 
 bot.hears('🏭 Company', (ctx, next) => {
@@ -89,6 +113,7 @@ bot.start((ctx) => {
      Markup.keyboard([
      Markup.callbackButton('📄  CV', '📄  CV'),
      Markup.callbackButton('💾 Data', '💾 Data'),
+     Markup.callbackButton('🔎 Search', '🔎 Search'),
      Markup.callbackButton('🏠', '🏠')
   ]).extra())
 })
@@ -132,7 +157,7 @@ bot.hears('⭐️ Experience', (ctx) => {
                 "Finishing date: " + (res.experience[i].FinishingDate || '') + "\n" +
                 "On course: " + res.experience[i].onCourse + "\n", Extra.HTML().markup((m) =>
           m.inlineKeyboard([
-            m.callbackButton('Edit','ed' + i)])
+            m.callbackButton('Edit','ex' + i)])
         ))
     }
 
@@ -140,7 +165,23 @@ bot.hears('⭐️ Experience', (ctx) => {
 })
 
 bot.hears('📚 Studies', (ctx) => {
-  return ctx.reply('Add your studies to succes!',
+  api.getEducations(function(res) {
+    edus = res.education;
+    console.log(res);
+    for (var i = 0; i < res.education.length; i++)
+    {
+      ctx.reply("Degree: " + res.education[i].courseCode + "\n" +
+                "School: " + res.education[i].institutionName + "\n" +
+                "Starting date: " + res.education[i].startingDate + "\n" +
+                "Finishing date: " + (res.education[i].FinishingDate || '') + "\n" +
+                "Still enrolled: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+          m.inlineKeyboard([
+            m.callbackButton('Edit','ed' + i)])
+        ))
+    }
+
+  },cvs[currentCV]);
+  /*return ctx.reply('Add your studies to succes!',
   Markup.keyboard([
       Markup.callbackButton('🎓 Degree', '🎓 Degree'),
       Markup.callbackButton('🏛 Institution', '🏛 Institution'),
@@ -149,11 +190,28 @@ bot.hears('📚 Studies', (ctx) => {
     .oneTime()
     .resize()
     .extra()
-    )
+  )*/
   })
 
 bot.hears('📖 Languages', (ctx) => {
-    return ctx.reply('How many languages you know?',
+  api.getEducations(function(res) {
+    edus = res.education;
+    console.log(res);
+    for (var i = 0; i < res.education.length; i++)
+    {
+      ctx.reply("Degree: " + res.education[i].courseCode + "\n" +
+                "School: " + res.education[i].institutionName + "\n" +
+                "Starting date: " + res.education[i].startingDate + "\n" +
+                "Finishing date: " + (res.education[i].FinishingDate || '') + "\n" +
+                "Still enrolled: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+          m.inlineKeyboard([
+            m.callbackButton('Edit','ed' + i)])
+        ))
+    }
+
+  },cvs[currentCV]);
+
+    /*return ctx.reply('How many languages you know?',
     Markup.keyboard([
         Markup.callbackButton('🈵 Language', '🈵 Language'),
         Markup.callbackButton('🏆 Level', '🏆 Level'),
@@ -162,7 +220,7 @@ bot.hears('📖 Languages', (ctx) => {
       .oneTime()
       .resize()
       .extra()
-      )
+    )*/
     })
 
 bot.hears('🏅 Knowledge', (ctx) => {
@@ -208,12 +266,30 @@ bot.hears('💾 Data', (ctx) => {
   .keyboard([
       ['📧 Email', '📝 Full name'],
       ['📸 Photo','🌐 Profile link'],
-      ['🔙']
+      ['🏠']
        ])
     .oneTime()
     .resize()
     .extra()
     )
+ })
+
+ bot.hears('🔎 Search', (ctx) => {
+   api.getOffers(function(res) {
+     exps = res.experience;
+     for (var i = 0; i < res.experience.length; i++)
+     {
+       ctx.reply("Company: " + res.experience[i].company + "\n" +
+                 "Job title: " + res.experience[i].job + "\n" +
+                 "Starting date: " + res.experience[i].startingDate + "\n" +
+                 "Finishing date: " + (res.experience[i].FinishingDate || '') + "\n" +
+                 "On course: " + res.experience[i].onCourse + "\n", Extra.HTML().markup((m) =>
+           m.inlineKeyboard([
+             m.callbackButton('Edit','ex' + i)])
+         ))
+     }
+
+   },"tech");
  })
 
 bot.hears('🏠', (ctx) => {
@@ -227,7 +303,7 @@ bot.hears('🏠', (ctx) => {
 })
 
 bot.on('text', (ctx) => {
-  console.log("AAAAAAAAAAAAAAAAAAAAA" + ctx.message.text)
+  //console.log("AAAAAAAAAAAAAAAAAAAAA" + ctx.message.text)
   if (states.companyEdit){
     exps[currentExperienceEdit].company = ctx.message.text;
     api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);

@@ -34,7 +34,8 @@ var server = app.listen(port, function () {
 });
 
 var args = {
-    headers : { "Authorization" : "Basic N2I5ZjMwMGNiZjUxNGNhOGJjOGIxMDI3NTk5OWE2ZGQ6eHFKVzBKbEJvcjJrUlVBbG5Pd050Z1U2RlNlT3dGUmtkQXJjVEpyUWI0UXg4ZkJCSTg=, Bearer " + token}
+    headers : { "Authorization" : "Basic N2I5ZjMwMGNiZjUxNGNhOGJjOGIxMDI3NTk5OWE2ZGQ6eHFKVzBKbEJvcjJrUlVBbG5Pd050Z1U2RlNlT3dGUmtkQXJjVEpyUWI0UXg4ZkJCSTg=, Bearer " + token,
+  "Content-Type" : "application/json"}
 };
 var getCvs = function(callback){
     client.get("https://api.infojobs.net/api/2/curriculum", args, function (data, response) {
@@ -96,6 +97,12 @@ var getFutureJob = function(callback, cvCode){
 }
 var getPersonalData = function(callback, cvCode){
     client.get("https://api.infojobs.net/api/2/curriculum/" + cvCode + "/personalData", args, function (data, response) {
+        callback(data);
+    });
+}
+
+var getOffers = function(callback, word){
+    client.get("https://api.infojobs.net/api/7/offer?q=" + word, args, function (data, response) {
         callback(data);
     });
 }
