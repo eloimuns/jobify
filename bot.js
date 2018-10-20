@@ -6,13 +6,30 @@ const api = require('./api')
 const bot = new Telegraf(process.env.BOT_TOKEN)
 var i = 0;
 
-bot.use(Telegraf.log())
+//bot.use(Telegraf.log())
 
 var cvs = [];
 var exps = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
 
+var states = {
+  companyEdit : false,
+  jobTitleEdit : false,
+  startDateEdit : false,
+  finishingDateEdit : false,
+  onCourseEdit : false
+};
+
+var resetStates = function(){
+  states = {
+    companyEdit : false,
+    jobTitleEdit : false,
+    startDateEdit : false,
+    finishingDateEdit : false,
+    onCourseEdit : false
+  };
+}
 
 bot.hears('📄  CV', (ctx) => {
       api.getCvs(function(res) {
@@ -62,12 +79,10 @@ bot.action(/.+/, (ctx) => {
     }
 })
 
-
-
-bot.hears('🏭 Company', (ctx) => {
+bot.hears('🏭 Company', (ctx, next) => {
+  states.companyEdit = true;
   ctx.reply((exps[currentExperienceEdit] != null ? exps[currentExperienceEdit].company : 'a'))
 })
-
 
 bot.start((ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
@@ -75,10 +90,8 @@ bot.start((ctx) => {
      Markup.callbackButton('📄  CV', '📄  CV'),
      Markup.callbackButton('💾 Data', '💾 Data'),
      Markup.callbackButton('🏠', '🏠')
-  ]).extra()
-)
+  ]).extra())
 })
-
 
 bot.hears('XXX', (ctx) => {
   return ctx.reply('This is your CV, here you can modify it!', Markup
@@ -107,9 +120,6 @@ bot.hears('🔙', (ctx) => {
     .extra()
   )
 })
-
-
-
 
 bot.hears('⭐️ Experience', (ctx) => {
   api.getExperiencies(function(res) {
@@ -179,8 +189,7 @@ bot.hears('🗄 Extra information', (ctx) => {
     .resize()
     .extra()
     )
-    })
-
+})
 
 bot.hears('📑 Employment status', (ctx) => {
     return ctx.reply('Time to look for a job!', Markup
@@ -192,7 +201,7 @@ bot.hears('📑 Employment status', (ctx) => {
       .resize()
       .extra()
       )
-      })
+})
 
 bot.hears('💾 Data', (ctx) => {
   return ctx.reply('Here you can check your personal information!', Markup
@@ -205,7 +214,7 @@ bot.hears('💾 Data', (ctx) => {
     .resize()
     .extra()
     )
-    })
+ })
 
 bot.hears('🏠', (ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
@@ -217,5 +226,12 @@ bot.hears('🏠', (ctx) => {
   )
 })
 
+bot.on('text', (ctx) => {
+  console.log("AAAAAAAAAAAAAAAAAAAAA" + ctx.message.text)
+  if (states.companyEdit){
+    exps[currentExperienceEdit].company = ctx.message.text;
+    api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);
+  }
+})
 
 bot.startPolling();

@@ -1,5 +1,5 @@
 'use strict';
-var token = "9d7aceca-d575-400d-b647-c6b500ed6ce9";
+var token = "c58421e8-6177-47b0-9fb3-5387adf529cc";
 var bodyParser = require('body-parser');
 var path = require("path");
 var express = require('express');
@@ -80,11 +80,12 @@ var getExperience = function(callback, cvCode, experience){
     });
 }
 
-var setExperience = function(callback, cvCode, experience){
-    args = {};
+var setExperience = function(cvCode, experience){
     args.data = experience;
-    client.get("https://api.infojobs.net/api/1/curriculum/" + cvCode + "/experience/" + experience.code, args, function (data, response) {
-        callback(data);
+    console.log(cvCode)
+    console.log(experience)
+    client.put("https://api.infojobs.net/api/4/curriculum/" + cvCode + "/experience", args, function (data, response) {
+        console.log(data)
     });
 }
 
