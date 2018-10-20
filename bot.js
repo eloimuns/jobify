@@ -37,7 +37,7 @@ var resetStates = function(){
   };
 }
 
-bot.hears('📄  CV', (ctx) => {
+bot.hears('📄 CV', (ctx) => {
       api.getCvs(function(res) {
           var arr = [];
           for (var i = 0; i < res.length; i++)
@@ -73,9 +73,9 @@ bot.action(/.+/, (ctx) => {
       currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
       ctx.reply('Select item to modify', Markup
         .keyboard([
-          ['🏭 Company', '👨‍💼 Position'],
-          ['🏆 Level', 'Category'],
-          ['Subcategory', '🔙']
+          ['🏭 Company', '👨‍💼 Job title'],
+          ['Starting date', 'Finish date'],
+          ['Still enrolled', '🔙']
         ])
         .oneTime()
         .resize()
@@ -86,16 +86,67 @@ bot.action(/.+/, (ctx) => {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify',
         Markup.keyboard([
-            Markup.callbackButton('🎓 Degree', '🎓 Degree'),
-            Markup.callbackButton('🏛 Institution', '🏛 Institution'),
-            Markup.callbackButton('🔙', '🔙'),
+          ['🎓 Degree', '🏛 Institution'],
+          ['Starting date', 'Finishing date'],
+          ['Still enrolled', '🔙'],
             ])
           .oneTime()
           .resize()
           .extra()
         )
       }
-      else   if (ctx.match[0].startsWith('app'))  {
+    else   if (ctx.match[0].startsWith('lan'))  {
+        currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
+        ctx.reply('Select item to modify',
+        Markup.keyboard([
+        ['🈵 Language', 'Writing'],
+        ['Speaking', 'Reading'],
+        ['🔙']
+        ])
+      .oneTime()
+      .resize()
+      .extra()
+    )
+      }
+    else   if (ctx.match[0].startsWith('know'))  {
+        currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
+        ctx.reply('Select item to modify',
+        Markup.keyboard([
+        Markup.callbackButton('🧠 Skill', '🧠 Skill'),
+        Markup.callbackButton('🏆 Level', '🏆 Level'),
+        Markup.callbackButton('🔙', '🔙'),
+          ])
+        .oneTime()
+        .resize()
+        .extra()
+        )
+      }
+    else   if (ctx.match[0].startsWith('xtra'))  {
+        currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
+        ctx.reply('Select item to modify', Markup
+        .keyboard([
+            ['📇 Driving license', '🚗 Own vehicle'],
+            ['🌍 Nationality', '👩🏽‍🔧 Freelance'],
+            ['🔙']
+             ])
+        .oneTime()
+        .resize()
+        .extra()
+    )
+      }
+    else   if (ctx.match[0].startsWith('employ'))  {
+        currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
+        ctx.reply('Select item to modify', Markup
+        .keyboard([
+        ['Currently working', 'Prefered position'],
+        ['🛠 Employment status', '🔙']
+         ])
+        .oneTime()
+        .resize()
+       .extra()
+    )
+      }
+    else   if (ctx.match[0].startsWith('app'))  {
           currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
           ctx.reply('Select item to modify',
           Markup.keyboard([
@@ -110,6 +161,31 @@ bot.action(/.+/, (ctx) => {
         }
 })
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 bot.hears('🏭 Company', (ctx, next) => {
   states.companyEdit = true;
   ctx.reply((exps[currentExperienceEdit] != null ? exps[currentExperienceEdit].company : 'a'))
@@ -118,7 +194,7 @@ bot.hears('🏭 Company', (ctx, next) => {
 bot.start((ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
      Markup.keyboard([
-     Markup.callbackButton('📄  CV', '📄  CV'),
+     Markup.callbackButton('📄 CV', '📄 CV'),
      Markup.callbackButton('💾 Data', '💾 Data'),
      Markup.callbackButton('🔎 Search', '🔎 Search'),
      Markup.callbackButton('🏠', '🏠')
@@ -168,21 +244,10 @@ bot.hears('📚 Studies', (ctx) => {
                 "Finishing date: " + (res.education[i].FinishingDate || '') + "\n" +
                 "Still enrolled: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
           m.inlineKeyboard([
-            m.callbackButton('Edit','ed' + i)])
+          m.callbackButton('Edit','ed' + i)])
         ))
     }
-
   },cvs[currentCV]);
-  /*return ctx.reply('Add your studies to succes!',
-  Markup.keyboard([
-      Markup.callbackButton('🎓 Degree', '🎓 Degree'),
-      Markup.callbackButton('🏛 Institution', '🏛 Institution'),
-      Markup.callbackButton('🔙', '🔙'),
-      ])
-    .oneTime()
-    .resize()
-    .extra()
-  )*/
   })
 
 bot.hears('📖 Languages', (ctx) => {
@@ -191,66 +256,63 @@ bot.hears('📖 Languages', (ctx) => {
     console.log(res);
     for (var i = 0; i < res.education.length; i++)
     {
-      ctx.reply("Degree: " + res.education[i].courseCode + "\n" +
-                "School: " + res.education[i].institutionName + "\n" +
-                "Starting date: " + res.education[i].startingDate + "\n" +
-                "Finishing date: " + (res.education[i].FinishingDate || '') + "\n" +
-                "Still enrolled: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+      ctx.reply("Language: " + res.education[i].courseCode + "\n" +
+                "Writing: " + res.education[i].startingDate + "\n" +
+                "Speaking: " + (res.education[i].FinishingDate || '') + "\n" +
+                "Reading: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
           m.inlineKeyboard([
-            m.callbackButton('Edit','ed' + i)])
+            m.callbackButton('Edit','lan' + i)])
         ))
     }
-
   },cvs[currentCV]);
-
-    /*return ctx.reply('How many languages you know?',
-    Markup.keyboard([
-        Markup.callbackButton('🈵 Language', '🈵 Language'),
-        Markup.callbackButton('🏆 Level', '🏆 Level'),
-        Markup.callbackButton('🔙', '🔙'),
-        ])
-      .oneTime()
-      .resize()
-      .extra()
-    )*/
     })
 
 bot.hears('🏅 Knowledge', (ctx) => {
-      return ctx.reply('Did you have any uncommon knowledge? Tell us!',
-      Markup.keyboard([
-          Markup.callbackButton('🧠 Knowledge', '🧠 Knowledge'),
-          Markup.callbackButton('🏆 Level', '🏆 Level'),
-          Markup.callbackButton('🔙', '🔙'),
-          ])
-        .oneTime()
-        .resize()
-        .extra()
-        )
+    api.getEducations(function(res) {
+      edus = res.education;
+      console.log(res);
+      for (var i = 0; i < res.education.length; i++)
+      {
+        ctx.reply("Skill: " + res.education[i].courseCode + "\n" +
+                  "Level: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+            m.inlineKeyboard([
+              m.callbackButton('Edit','know' + i)])
+          ))
+      }
+      },cvs[currentCV]);
       })
 
 bot.hears('🗄 Extra information', (ctx) => {
-    return ctx.reply('Share extra information to know more about you!', Markup
-   .keyboard([
-      ['📇 Driving license', '🚗 Own vehicle'],
-      ['🌍 Nationality', '👩🏽‍🔧 Self-employed'],
-      ['🔙']
-       ])
-    .oneTime()
-    .resize()
-    .extra()
-    )
+  api.getEducations(function(res) {
+    edus = res.education;
+    console.log(res);
+    for (var i = 0; i < res.education.length; i++)
+    {
+      ctx.reply("Driving license: " + res.education[i].courseCode + "\n" +
+                "Own vehicle: " + res.education[i].startingDate + "\n" +
+                "Nationality: " + (res.education[i].FinishingDate || '') + "\n" +
+                "Freelance: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+          m.inlineKeyboard([
+            m.callbackButton('Edit','xtra' + i)])
+        ))
+    }
+    },cvs[currentCV]); 
 })
 
 bot.hears('📑 Employment status', (ctx) => {
-    return ctx.reply('Time to look for a job!', Markup
-    .keyboard([
-        ['🛠 Currently working', '🕵️‍♂️Looking for a job'],
-        ['📋 Preferences', '🔙']
-         ])
-      .oneTime()
-      .resize()
-      .extra()
-      )
+  api.getEducations(function(res) {
+    edus = res.education;
+    console.log(res);
+    for (var i = 0; i < res.education.length; i++)
+    {
+      ctx.reply("Currently working: " + res.education[i].courseCode + "\n" +
+                "Prefered position: " + (res.education[i].FinishingDate || '') + "\n" +
+                "Employment status: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+          m.inlineKeyboard([
+            m.callbackButton('Edit','employ' + i)])
+        ))
+    }
+    },cvs[currentCV]);
 })
 
 bot.hears('💾 Data', (ctx) => {
@@ -265,6 +327,24 @@ bot.hears('💾 Data', (ctx) => {
     .extra()
     )
  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  bot.hears('🔎 Search', (ctx) => {
    ctx.reply("What jobs are you looking for?");
