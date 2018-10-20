@@ -16,7 +16,8 @@ bot.use(Telegraf.log())
 
 bot.command('onetime', ({ reply }) =>
   reply('One time keyboard', Markup
-    .keyboard(['/simple', '/inline', '/pyramid'])
+    .keyboard(['Work', 'Studies', 'Languages'],
+    ['Knowledge', 'Other' '/'])
     .oneTime()
     .resize()
     .extra()
