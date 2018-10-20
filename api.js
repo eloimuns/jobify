@@ -42,14 +42,53 @@ var getCvs = function(callback){
     });
 }
 
-module.exports.getCvs = getCvs;
-/*
-app.get('/test', function(req, res){
-
-    client.get("https://api.infojobs.net/api/1/curriculum/419133b7-8d17-480d-91a8-f0b9cb6a609b/cvtext", args, function (data, response) {
-        // parsed response body as js object
-        callback()
+var getCV = function(callback, cvCode){
+    client.get("https://api.infojobs.net/api/1/curriculum/" + cvCode + "/cvtext", args, function (data, response) {
+        callback(data);
     });
+}
 
-    res.send('...');
-});*/
+var getEducations = function(callback, cvCode){
+    client.get("https://api.infojobs.net/api/1/curriculum/" + cvCode + "/education", args, function (data, response) {
+        callback(data);
+    });
+}
+
+var getEducation = function(callback, cvCode, education){
+    client.get("https://api.infojobs.net/api/1/curriculum/" + cvCode + "/education/" + education, args, function (data, response) {
+        callback(data);
+    });
+}
+
+var getExperiencies = function(callback, cvCode){
+    client.get("https://api.infojobs.net/api/1/curriculum/" + cvCode + "/experience", args, function (data, response) {
+        callback(data);
+    });
+}
+
+var getExperience = function(callback, cvCode, experience){
+    client.get("https://api.infojobs.net/api/1/curriculum/" + cvCode + "/experience/" + experience, args, function (data, response) {
+        callback(data);
+    });
+}
+
+var getFutureJob = function(callback, cvCode){
+    client.get("https://api.infojobs.net/api/4/curriculum/" + cvCode + "/futureJob", args, function (data, response) {
+        callback(data);
+    });
+}
+var getPersonalData = function(callback, cvCode){
+    client.get("https://api.infojobs.net/api/2/curriculum/" + cvCode + "/personalData", args, function (data, response) {
+        callback(data);
+    });
+}
+
+
+module.exports.getCvs = getCvs;
+module.exports.getCV = getCV;
+module.exports.getEducations = getEducations;
+module.exports.getEducation = getEducation;
+module.exports.getExperiencies = getExperiencies;
+module.exports.getExperience = getExperience;
+module.exports.getFutureJob = getFutureJob;
+module.exports.getPersonalData = getPersonalData;
