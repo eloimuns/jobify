@@ -15,6 +15,8 @@ bot.hears('count', (ctx) => ctx.reply(i=i+1))
 
 bot.use(Telegraf.log())
 
+var cvs = [];
+
 bot.command('onetime', ({ reply }) =>
   reply('One time keyboard', Markup
     .keyboard(['Work', 'Studies', 'Languages'],
@@ -122,22 +124,32 @@ bot.action('italic', (ctx) => {
   ])))
 })
 
-bot.action(/.+/, (ctx) => {
-  return ctx.answerCbQuery(`Oh, ${ctx.match[0]}! Great choice`)
-})
-
-bot.hears('getcvs', (ctx) => {
-      ctx.reply("CV List");
+bot.hears('📄  CV', (ctx) => {
       api.getCvs(function(res) {
-        for (var i = 0; i < res.length; i++)
-        {
-          var Principal = res[i].principal ? 'Yes' : 'No';
-          console.log(res);
-          ctx.reply(i+1 + " - CV Name: " + res[i].name +  " Is CV Principal: " + Principal);
-        }
+          var arr = [];
+          for (var i = 0; i < res.length; i++)
+          {
+            var Principal = res[i].principal ? 'Yes' : 'No';
+            arr.push(Markup.callbackButton(" - CV Name: " + res[i].name +  " Is CV Principal: " + Principal, "cv" + i, res.code));
+            cvs.push(res[i].code);
+          }
+          ctx.reply("CV List", Extra.HTML().markup((m) =>
+              m.inlineKeyboard(arr)
+        ))
       });
 })
 
+bot.action(/.+/, (ctx) => {
+  //return ctx.answerCbQuery(`Oh, ${ctx.match[0]}! Great choice`)
+  if (ctx.match[0] == "cv0")
+  {
+    api.getCV(function(res) {
+      return ctx.reply(res.cvtexts, Extra.markup(
+        Markup.keyboard(['Edit'])
+      ))
+    }, cvs[0]);
+  }
+})
 
 
 
@@ -177,10 +189,10 @@ bot.start((ctx) => {
 })
 
 
-bot.hears('📄  CV', (ctx) => {
+bot.hears('XXX', (ctx) => {
   return ctx.reply('This is your CV, here you can modify it!', Markup
     .keyboard([
-      ['⭐️ Experience', '📚 Studies'], 
+      ['⭐️ Experience', '📚 Studies'],
       ['📖 Languages', '🏅 Knowledge'],
       ['🗄 Extra information', '📑 Employment status'],
       ['🏠']
@@ -194,7 +206,7 @@ bot.hears('📄  CV', (ctx) => {
 bot.hears('🔙', (ctx) => {
   return ctx.reply('This is your CV, here you can modify it!', Markup
     .keyboard([
-      ['⭐️ Experience', '📚 Studies'], 
+      ['⭐️ Experience', '📚 Studies'],
       ['📖 Languages', '🏅 Knowledge'],
       ['🗄 Extra information', '📑 Employment status'],
       ['🏠']
@@ -211,7 +223,7 @@ bot.hears('🔙', (ctx) => {
 bot.hears('⭐️ Experience', ({ reply }) => {
   return reply('Add your job experience!', Markup
     .keyboard([
-      ['🏭 Company', '👨‍💼 Position'], 
+      ['🏭 Company', '👨‍💼 Position'],
       ['🏆 Level', 'Category'],
       ['Subcategory', '🔙']
     ])
@@ -235,7 +247,7 @@ bot.hears('📚 Studies', (ctx) => {
   })
 
 bot.hears('📖 Languages', (ctx) => {
-    return ctx.reply('How many languages you know?', 
+    return ctx.reply('How many languages you know?',
     Markup.keyboard([
         Markup.callbackButton('🈵 Language', '🈵 Language'),
         Markup.callbackButton('🏆 Level', '🏆 Level'),
@@ -248,7 +260,7 @@ bot.hears('📖 Languages', (ctx) => {
     })
 
 bot.hears('🏅 Knowledge', (ctx) => {
-      return ctx.reply('Did you have any uncommon knowledge? Tell us!', 
+      return ctx.reply('Did you have any uncommon knowledge? Tell us!',
       Markup.keyboard([
           Markup.callbackButton('🧠 Knowledge', '🧠 Knowledge'),
           Markup.callbackButton('🏆 Level', '🏆 Level'),
@@ -263,7 +275,7 @@ bot.hears('🏅 Knowledge', (ctx) => {
 bot.hears('🗄 Extra information', (ctx) => {
     return ctx.reply('Share extra information to know more about you!', Markup
    .keyboard([
-      ['📇 Driving license', '🚗 Own vehicle'], 
+      ['📇 Driving license', '🚗 Own vehicle'],
       ['🌍 Nationality', '👩🏽‍🔧 Self-employed'],
       ['🔙']
        ])
@@ -277,7 +289,7 @@ bot.hears('🗄 Extra information', (ctx) => {
 bot.hears('📑 Employment status', (ctx) => {
     return ctx.reply('Time to look for a job!', Markup
     .keyboard([
-        ['🛠 Currently working', '🕵️‍♂️Looking for a job'], 
+        ['🛠 Currently working', '🕵️‍♂️Looking for a job'],
         ['📋 Preferences', '🔙']
          ])
       .oneTime()
@@ -295,7 +307,7 @@ bot.hears('📑 Employment status', (ctx) => {
 bot.hears('💾 Data', (ctx) => {
   return ctx.reply('Here you can check your personal information!', Markup
   .keyboard([
-      ['📧 Email', '📝 Full name'], 
+      ['📧 Email', '📝 Full name'],
       ['📸 Photo','🌐 Profile link'],
       ['🔙']
        ])
