@@ -255,7 +255,7 @@ bot.hears('📑 Employment status', (ctx) => {
       )
 })
 
-bot.hears('💾 Data', (ctx) => {
+/*bot.hears('💾 Data', (ctx) => {
   return ctx.reply('Here you can check your personal information!', Markup
   .keyboard([
       ['📧 Email', '📝 Full name'],
@@ -267,6 +267,21 @@ bot.hears('💾 Data', (ctx) => {
     .extra()
     )
  })
+*/
+
+
+
+ bot.hears('💾 Data', (ctx) => {
+   api.getCandidate(function(res) {
+       if (res.error != null) return ctx.reply("User not authenticated " + res.error);
+       ctx.reply("Name: " + res[0].fullName + "\n" +
+                 "City: " + res[0].city + "\n" +
+                 "Email: " + res[0].email + "\n" +
+                 "Public profile link: " + (res.publicprofilelink) + "\n");
+ });
+})
+
+
 
  bot.hears('🔎 Search', (ctx) => {
    ctx.reply("What jobs are you looking for?");
