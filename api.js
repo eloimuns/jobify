@@ -1,5 +1,5 @@
 'use strict';
-var token = "c58421e8-6177-47b0-9fb3-5387adf529cc";
+var token = "6d2ecb9c-96bf-4a67-9442-a61a65a460e0";
 var bodyParser = require('body-parser');
 var path = require("path");
 var express = require('express');
@@ -102,7 +102,7 @@ var getPersonalData = function(callback, cvCode){
 }
 
 var getOffers = function(callback, word){
-    client.get("https://api.infojobs.net/api/7/offer?q=" + word, args, function (data, response) {
+    client.get("https://api.infojobs.net/api/7/offer?q=" + word + "&maxResults=10", args, function (data, response) {
         callback(data);
     });
 }
@@ -118,3 +118,4 @@ module.exports.getExperience = getExperience;
 module.exports.getFutureJob = getFutureJob;
 module.exports.getPersonalData = getPersonalData;
 module.exports.setExperience = setExperience;
+module.exports.getOffers = getOffers;

@@ -11,6 +11,7 @@ var i = 0;
 var cvs = [];
 var exps = [];
 var edus = [];
+var offers = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
 
@@ -19,7 +20,9 @@ var states = {
   jobTitleEdit : false,
   startDateEdit : false,
   finishingDateEdit : false,
-  onCourseEdit : false
+  onCourseEdit : false,
+  search : false,
+  apply : false
 };
 
 var resetStates = function(){
@@ -28,7 +31,9 @@ var resetStates = function(){
     jobTitleEdit : false,
     startDateEdit : false,
     finishingDateEdit : false,
-    onCourseEdit : false
+    onCourseEdit : false,
+    search : false,
+    apply : false
   };
 }
 
@@ -51,7 +56,6 @@ bot.action(/.+/, (ctx) => {
   //return ctx.answerCbQuery(`Oh, ${ctx.match[0]}! Great choice`)
   if (ctx.match[0].startsWith('cv'))
   {
-
     currentCV = ctx.match[0].substr(ctx.match[0].length - 1);
     api.getCV(function(res) {
       ctx.reply('This is your CV, here you can modify it!', Markup
@@ -80,16 +84,6 @@ bot.action(/.+/, (ctx) => {
     }
     else   if (ctx.match[0].startsWith('ed'))  {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
-        /*ctx.reply('Select item to modify', Markup
-          .keyboard([
-            ['🏭 Company', '👨‍💼 Position'],
-            ['🏆 Level', 'Category'],
-            ['Subcategory', '🔙']
-          ])
-          .oneTime()
-          .resize()
-          .extra()
-        )*/
         ctx.reply('Select item to modify',
         Markup.keyboard([
             Markup.callbackButton('🎓 Degree', '🎓 Degree'),
@@ -101,6 +95,19 @@ bot.action(/.+/, (ctx) => {
           .extra()
         )
       }
+      else   if (ctx.match[0].startsWith('app'))  {
+          currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
+          ctx.reply('Select item to modify',
+          Markup.keyboard([
+              Markup.callbackButton('🎓 Degree', '🎓 Degree'),
+              Markup.callbackButton('🏛 Institution', '🏛 Institution'),
+              Markup.callbackButton('🔙', '🔙'),
+              ])
+            .oneTime()
+            .resize()
+            .extra()
+          )
+        }
 })
 
 bot.hears('🏭 Company', (ctx, next) => {
@@ -116,20 +123,6 @@ bot.start((ctx) => {
      Markup.callbackButton('🔎 Search', '🔎 Search'),
      Markup.callbackButton('🏠', '🏠')
   ]).extra())
-})
-
-bot.hears('XXX', (ctx) => {
-  return ctx.reply('This is your CV, here you can modify it!', Markup
-    .keyboard([
-      ['⭐️ Experience', '📚 Studies'],
-      ['📖 Languages', '🏅 Knowledge'],
-      ['🗄 Extra information', '📑 Employment status'],
-      ['🏠']
-    ])
-    .oneTime()
-    .resize()
-    .extra()
-  )
 })
 
 bot.hears('🔙', (ctx) => {
@@ -160,7 +153,6 @@ bot.hears('⭐️ Experience', (ctx) => {
             m.callbackButton('Edit','ex' + i)])
         ))
     }
-
   },cvs[currentCV]);
 })
 
@@ -275,21 +267,8 @@ bot.hears('💾 Data', (ctx) => {
  })
 
  bot.hears('🔎 Search', (ctx) => {
-   api.getOffers(function(res) {
-     exps = res.experience;
-     for (var i = 0; i < res.experience.length; i++)
-     {
-       ctx.reply("Company: " + res.experience[i].company + "\n" +
-                 "Job title: " + res.experience[i].job + "\n" +
-                 "Starting date: " + res.experience[i].startingDate + "\n" +
-                 "Finishing date: " + (res.experience[i].FinishingDate || '') + "\n" +
-                 "On course: " + res.experience[i].onCourse + "\n", Extra.HTML().markup((m) =>
-           m.inlineKeyboard([
-             m.callbackButton('Edit','ex' + i)])
-         ))
-     }
-
-   },"tech");
+   ctx.reply("What jobs are you looking for?");
+   states.search = true;
  })
 
 bot.hears('🏠', (ctx) => {
@@ -297,16 +276,35 @@ bot.hears('🏠', (ctx) => {
        Markup.keyboard([
        Markup.callbackButton('📄 CV', '📄 CV'),
        Markup.callbackButton('💾 Data', '💾 Data'),
+       Markup.callbackButton('🔎 Search', '🔎 Search'),
        Markup.callbackButton('🏠', '🏠')
     ]).extra()
   )
 })
 
 bot.on('text', (ctx) => {
-  //console.log("AAAAAAAAAAAAAAAAAAAAA" + ctx.message.text)
   if (states.companyEdit){
     exps[currentExperienceEdit].company = ctx.message.text;
     api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);
+  }
+  else if (states.search){
+    api.getOffers(function(res) {
+      if (res.offers.length == 0)
+      {
+        ctx.reply("No jobs found!")
+      }
+      for (var i = 0; i < res.offers.length; i++)
+      {
+        offers = res.offers;
+        ctx.reply("Title: " + res.offers[i].title + "\n" +
+                  "Company: " + res.offers[i].author.name + "\n" +
+                  "City: " + res.offers[i].city + "\n" +
+                  "Experience min: " + (res.offers[i].experienceMin.value || '') + "\n" , Extra.HTML().markup((m) =>
+            m.inlineKeyboard([
+              m.callbackButton('Apply','app' + i)])
+          ))
+      }
+    },ctx.message.text);
   }
 })
 
