@@ -5,7 +5,18 @@ const Markup = require('telegraf/markup')
 const bot = new Telegraf(process.env.BOT_TOKEN)
 var i = 0;
 
-bot.start((ctx) => ctx.reply('Welcome!'))
+bot.start((ctx) => {
+    return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
+       Markup.keyboard([
+       Markup.callbackButton('CV', 'CV'),
+       Markup.callbackButton('Data', 'Data'),
+       Markup.callbackButton('🏠', '🏠')
+    ]).extra()
+  )
+})
+
+
+
 bot.help((ctx) => ctx.reply('Send me a sticker'))
 bot.on('sticker', (ctx) => ctx.reply('👍'))
 bot.hears('hi', (ctx) => ctx.reply('Hey there'))
@@ -17,7 +28,7 @@ bot.use(Telegraf.log())
 bot.command('onetime', ({ reply }) =>
   reply('One time keyboard', Markup
     .keyboard(['Work', 'Studies', 'Languages'],
-    ['Knowledge', 'Other' '/'])
+    ['Knowledge', 'Other','/'],)
     .oneTime()
     .resize()
     .extra()
@@ -123,7 +134,79 @@ bot.action('italic', (ctx) => {
 
 bot.action(/.+/, (ctx) => {
   return ctx.answerCbQuery(`Oh, ${ctx.match[0]}! Great choice`)
-})*/
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bot.hears('CV', (ctx) => {
+  return ctx.reply('This is your CV, here you can modify it!',
+    Markup.keyboard([
+      Markup.callbackButton('Experience', 'Experience'),
+      Markup.callbackButton('Studies', 'Studies'),
+      Markup.callbackButton('Languages', 'Languages'),
+      Markup.callbackButton('Knowledge', 'Knowledge'),
+      Markup.callbackButton('Extra information', 'Extra information'),
+      Markup.callbackButton('Employment situation', 'Employment situation'),
+      Markup.callbackButton('🏠', '🏠'),
+      
+    ]).extra()
+  )
+})
+
+bot.hears('Data', (ctx) => {
+  return ctx.reply('Here you can check your personal information!',
+    Markup.keyboard([
+      Markup.callbackButton('Email', 'Email'),
+       Markup.callbackButton('Full name', 'Full name'),
+       Markup.callbackButton('Photo', 'Photo'),
+       Markup.callbackButton('Profile link', 'Profile link'),
+    ]).extra()
+  )
+})
+
+
+bot.hears('🏠', (ctx) => {
+  return ctx.reply('',
+       Markup.keyboard([
+       Markup.callbackButton('CV', 'CV'),
+       Markup.callbackButton('Data', 'Data'),
+       Markup.callbackButton('🏠', '🏠')
+    ]).extra()
+  )
+})
+
+
 
 
 bot.startPolling();
