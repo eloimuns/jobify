@@ -8,7 +8,7 @@ var i = 0;
 bot.start((ctx) => {
     return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
        Markup.keyboard([
-       Markup.callbackButton('CV', 'CV'),
+       Markup.callbackButton('📄  CV', '📄  CV'),
        Markup.callbackButton('Data', 'Data'),
        Markup.callbackButton('🏠', '🏠')
     ]).extra()
@@ -169,20 +169,83 @@ bot.action(/.+/, (ctx) => {
 
 
 
-bot.hears('CV', (ctx) => {
-  return ctx.reply('This is your CV, here you can modify it!',
-    Markup.keyboard([
-      Markup.callbackButton('Experience', 'Experience'),
-      Markup.callbackButton('Studies', 'Studies'),
-      Markup.callbackButton('Languages', 'Languages'),
-      Markup.callbackButton('Knowledge', 'Knowledge'),
-      Markup.callbackButton('Extra information', 'Extra information'),
-      Markup.callbackButton('Employment situation', 'Employment situation'),
-      Markup.callbackButton('🏠', '🏠'),
-      
-    ]).extra()
+
+
+bot.hears('📄  CV', (ctx) => {
+  return ctx.reply('This is your CV, here you can modify it!', Markup
+    .keyboard([
+      ['⭐️ Experience', '📚 Studies'], 
+      ['📖 Languages', 'Knowledge'],
+      ['Extra information', 'Employment situation'],
+      ['🏠']
+    ])
+    .oneTime()
+    .resize()
+    .extra()
   )
 })
+
+bot.hears('🔙', (ctx) => {
+  return ctx.reply('This is your CV, here you can modify it!', Markup
+    .keyboard([
+      ['⭐️ Experience', '📚 Studies'], 
+      ['📖 Languages', 'Knowledge'],
+      ['Extra information', 'Employment situation'],
+      ['🏠']
+    ])
+    .oneTime()
+    .resize()
+    .extra()
+  )
+})
+
+
+
+
+bot.hears('⭐️ Experience', ({ reply }) => {
+  return reply('Add your job experience!', Markup
+    .keyboard([
+      ['Company', 'Position'], 
+      ['Level', 'Category'],
+      ['Subcategory', '🔙']
+    ])
+    .oneTime()
+    .resize()
+    .extra()
+  )
+})
+
+
+
+
+
+bot.hears('📚 Studies', (ctx) => {
+  return ctx.reply('Add your studies to succes!', 
+  Markup.keyboard([
+      Markup.callbackButton(' Degree', ' Degree'),
+      Markup.callbackButton(' Institution', ' Institution'),
+      Markup.callbackButton('🔙', '🔙'),
+      ])
+    .oneTime()
+    .resize()
+    .extra()
+    )
+  })
+
+  bot.hears('📖 Languages', (ctx) => {
+    return ctx.reply('How many languages you know? ', 
+    Markup.keyboard([
+        Markup.callbackButton(' Language', ' Language'),
+        Markup.callbackButton(' Level', 'Level'),
+        Markup.callbackButton('🔙', '🔙'),
+        ])
+      .oneTime()
+      .resize()
+      .extra()
+      )
+    })
+
+
 
 bot.hears('Data', (ctx) => {
   return ctx.reply('Here you can check your personal information!',
@@ -197,7 +260,7 @@ bot.hears('Data', (ctx) => {
 
 
 bot.hears('🏠', (ctx) => {
-  return ctx.reply('',
+  return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
        Markup.keyboard([
        Markup.callbackButton('CV', 'CV'),
        Markup.callbackButton('Data', 'Data'),
