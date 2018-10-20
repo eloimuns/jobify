@@ -4,6 +4,10 @@ var bodyParser = require('body-parser');
 var path = require("path");
 var express = require('express');
 var app = express();
+var keys = require("./key")
+
+var Client = require('node-rest-client').Client; 
+var client = new Client();
 
 app.use('/', express.static(path.join(__dirname, 'public')));
 
@@ -11,6 +15,12 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 // application/json
 app.use(bodyParser.json());
@@ -22,8 +32,15 @@ var server = app.listen(port, function () {
     console.log('Listening on port ' + server.address().port);
 });
 
-
-// API
 app.get('/test', function(req, res){
-    res.send('TEST');
+    var args = {
+        headers : { "Authorization" : "Basic N2I5ZjMwMGNiZjUxNGNhOGJjOGIxMDI3NTk5OWE2ZGQ6eHFKVzBKbEJvcjJrUlVBbG5Pd050Z1U2RlNlT3dGUmtkQXJjVEpyUWI0UXg4ZkJCSTg=,Bearer ff0f31c4-a673-46be-91c2-43330b6570bc"}
+    };
+
+    client.get("https://api.infojobs.net/api/1/curriculum/419133b7-8d17-480d-91a8-f0b9cb6a609b/cvtext", args, function (data, response) {
+        // parsed response body as js object
+        console.log(data);
+    });
+
+    res.send('...');
 });

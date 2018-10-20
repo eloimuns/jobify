@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="web.js"></script>
+
+<body>
+    <div class="row-fluid">
+        <div class="col-xs-12" style="margin: 100px 100px 100px 100px">
+            <form>
+                <div class="form-group">
+                    <label for="token">Token</label>
+                    <input type="text" class="form-control" id="token" aria-describedby="textHelp" placeholder="Enter token">
+                    <small id="textHelp" class="form-text text-muted">Paste the token that you can get from <a target="_blank" rel="noopener noreferrer" href="https://www.infojobs.net/api/oauth/user-authorize/index.xhtml?scope=CV,CANDIDATE_READ_CURRICULUM_CVTEXT,CANDIDATE_EDIT_CURRICULUM_CVTEXT,CANDIDATE_EDIT_CURRICULUM_EDUCATION,CANDIDATE_READ_CURRICULUM_EDUCATION,CANDIDATE_READ_CURRICULUM_EXPERIENCE,CANDIDATE_EDIT_CURRICULUM_EXPERIENCE,CANDIDATE_READ_CURRICULUM_FUTURE_JOB,CANDIDATE_EDIT_CURRICULUM_FUTURE_JOB,CANDIDATE_READ_CURRICULUM_PERSONAL_DATA,CANDIDATE_EDIT_CURRICULUM_PERSONAL_DATA&client_id=7b9f300cbf514ca8bc8b10275999a6dd&redirect_uri=http://www.infojobs.net/core/oauth2vc/index.xhtml&response_type=code">here</a></small>
+                </div>
+                
+            </form>
+            <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
+            <br/>
+            <br/>
+            <h5 id="accessToken"></h5>
+        </div>
+    </div>
+</body>
