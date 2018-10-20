@@ -80,6 +80,14 @@ var getExperience = function(callback, cvCode, experience){
     });
 }
 
+var setExperience = function(callback, cvCode, experience){
+    args = {};
+    args.data = experience;
+    client.get("https://api.infojobs.net/api/1/curriculum/" + cvCode + "/experience/" + experience.code, args, function (data, response) {
+        callback(data);
+    });
+}
+
 var getFutureJob = function(callback, cvCode){
     client.get("https://api.infojobs.net/api/4/curriculum/" + cvCode + "/futureJob", args, function (data, response) {
         callback(data);
@@ -101,3 +109,4 @@ module.exports.getExperiencies = getExperiencies;
 module.exports.getExperience = getExperience;
 module.exports.getFutureJob = getFutureJob;
 module.exports.getPersonalData = getPersonalData;
+module.exports.setExperience = setExperience;
