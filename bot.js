@@ -5,15 +5,6 @@ const Markup = require('telegraf/markup')
 const bot = new Telegraf(process.env.BOT_TOKEN)
 var i = 0;
 
-bot.start((ctx) => {
-    return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
-       Markup.keyboard([
-       Markup.callbackButton('📄  CV', '📄  CV'),
-       Markup.callbackButton('Data', 'Data'),
-       Markup.callbackButton('🏠', '🏠')
-    ]).extra()
-  )
-})
 
 
 
@@ -165,18 +156,23 @@ bot.action(/.+/, (ctx) => {
 
 
 
-
-
-
-
+bot.start((ctx) => {
+  return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
+     Markup.keyboard([
+     Markup.callbackButton('📄  CV', '📄  CV'),
+     Markup.callbackButton('💾 Data', '💾 Data'),
+     Markup.callbackButton('🏠', '🏠')
+  ]).extra()
+)
+})
 
 
 bot.hears('📄  CV', (ctx) => {
   return ctx.reply('This is your CV, here you can modify it!', Markup
     .keyboard([
       ['⭐️ Experience', '📚 Studies'], 
-      ['📖 Languages', 'Knowledge'],
-      ['Extra information', 'Employment situation'],
+      ['📖 Languages', '🏅 Knowledge'],
+      ['🗄 Extra information', '📑 Employment status'],
       ['🏠']
     ])
     .oneTime()
@@ -189,8 +185,8 @@ bot.hears('🔙', (ctx) => {
   return ctx.reply('This is your CV, here you can modify it!', Markup
     .keyboard([
       ['⭐️ Experience', '📚 Studies'], 
-      ['📖 Languages', 'Knowledge'],
-      ['Extra information', 'Employment situation'],
+      ['📖 Languages', '🏅 Knowledge'],
+      ['🗄 Extra information', '📑 Employment status'],
       ['🏠']
     ])
     .oneTime()
@@ -205,8 +201,8 @@ bot.hears('🔙', (ctx) => {
 bot.hears('⭐️ Experience', ({ reply }) => {
   return reply('Add your job experience!', Markup
     .keyboard([
-      ['Company', 'Position'], 
-      ['Level', 'Category'],
+      ['🏭 Company', '👨‍💼 Position'], 
+      ['🏆 Level', 'Category'],
       ['Subcategory', '🔙']
     ])
     .oneTime()
@@ -215,15 +211,11 @@ bot.hears('⭐️ Experience', ({ reply }) => {
   )
 })
 
-
-
-
-
 bot.hears('📚 Studies', (ctx) => {
   return ctx.reply('Add your studies to succes!', 
   Markup.keyboard([
-      Markup.callbackButton(' Degree', ' Degree'),
-      Markup.callbackButton(' Institution', ' Institution'),
+      Markup.callbackButton('🎓 Degree', '🎓 Degree'),
+      Markup.callbackButton('🏛 Institution', '🏛 Institution'),
       Markup.callbackButton('🔙', '🔙'),
       ])
     .oneTime()
@@ -232,11 +224,11 @@ bot.hears('📚 Studies', (ctx) => {
     )
   })
 
-  bot.hears('📖 Languages', (ctx) => {
-    return ctx.reply('How many languages you know? ', 
+bot.hears('📖 Languages', (ctx) => {
+    return ctx.reply('How many languages you know?', 
     Markup.keyboard([
-        Markup.callbackButton(' Language', ' Language'),
-        Markup.callbackButton(' Level', 'Level'),
+        Markup.callbackButton('🈵 Language', '🈵 Language'),
+        Markup.callbackButton('🏆 Level', '🏆 Level'),
         Markup.callbackButton('🔙', '🔙'),
         ])
       .oneTime()
@@ -245,25 +237,80 @@ bot.hears('📚 Studies', (ctx) => {
       )
     })
 
+bot.hears('🏅 Knowledge', (ctx) => {
+      return ctx.reply('Did you have any uncommon knowledge? Tell us!', 
+      Markup.keyboard([
+          Markup.callbackButton('🧠 Knowledge', '🧠 Knowledge'),
+          Markup.callbackButton('🏆 Level', '🏆 Level'),
+          Markup.callbackButton('🔙', '🔙'),
+          ])
+        .oneTime()
+        .resize()
+        .extra()
+        )
+      })
+
+bot.hears('🗄 Extra information', (ctx) => {
+    return ctx.reply('Share extra information to know more about you!', Markup
+   .keyboard([
+      ['📇 Driving license', '🚗 Own vehicle'], 
+      ['🌍 Nationality', '👩🏽‍🔧 Self-employed'],
+      ['🔙']
+       ])
+    .oneTime()
+    .resize()
+    .extra()
+    )
+    })
 
 
-bot.hears('Data', (ctx) => {
-  return ctx.reply('Here you can check your personal information!',
-    Markup.keyboard([
-      Markup.callbackButton('Email', 'Email'),
-       Markup.callbackButton('Full name', 'Full name'),
-       Markup.callbackButton('Photo', 'Photo'),
-       Markup.callbackButton('Profile link', 'Profile link'),
-    ]).extra()
-  )
-})
+bot.hears('📑 Employment status', (ctx) => {
+    return ctx.reply('Time to look for a job!', Markup
+    .keyboard([
+        ['🛠 Currently working', '🕵️‍♂️Looking for a job'], 
+        ['📋 Preferences', '🔙']
+         ])
+      .oneTime()
+      .resize()
+      .extra()
+      )
+      })
+
+
+
+
+
+
+
+bot.hears('💾 Data', (ctx) => {
+  return ctx.reply('Here you can check your personal information!', Markup
+  .keyboard([
+      ['📧 Email', '📝 Full name'], 
+      ['📸 Photo','🌐 Profile link'],
+      ['🔙']
+       ])
+    .oneTime()
+    .resize()
+    .extra()
+    )
+    })
+
+
+
+
+
+
+
+
+
+
 
 
 bot.hears('🏠', (ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
        Markup.keyboard([
-       Markup.callbackButton('CV', 'CV'),
-       Markup.callbackButton('Data', 'Data'),
+       Markup.callbackButton('📄 CV', '📄 CV'),
+       Markup.callbackButton('💾 Data', '💾 Data'),
        Markup.callbackButton('🏠', '🏠')
     ]).extra()
   )
