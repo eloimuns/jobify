@@ -44,7 +44,7 @@ var resetStates = function(){
 bot.start((ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
      Markup.keyboard([
-     Markup.callbackButton('📄  CV', '📄  CV'),
+     Markup.callbackButton('📄 CV', '📄 CV'),
      Markup.callbackButton('💾 Data', '💾 Data'),
      Markup.callbackButton('🔎 Search', '🔎 Search'),
      Markup.callbackButton('My Applications',' My Applications'),
@@ -52,7 +52,7 @@ bot.start((ctx) => {
   ]).extra())
 })
 
-bot.hears('📄  CV', (ctx) => {
+bot.hears('📄 CV', (ctx) => {
       api.getCvs(function(res) {
           var arr = [];
           for (var i = 0; i < res.length; i++)
@@ -131,6 +131,7 @@ bot.action(/.+/, (ctx) => {
                   m.inlineKeyboard(arr)
             ))
           });
+        }
     else   if (ctx.match[0].startsWith('lan'))  {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify',
