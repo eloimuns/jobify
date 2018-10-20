@@ -101,11 +101,43 @@ var getPersonalData = function(callback, cvCode){
     });
 }
 
+var getSkills = function(callback, cvCode){
+    client.get("https://api.infojobs.net/api/2/curriculum/" + cvCode + "/skill", args, function (data, response) {
+        callback(data);
+    });
+}
+
 var getOffers = function(callback, word){
     client.get("https://api.infojobs.net/api/7/offer?q=" + word + "&maxResults=10", args, function (data, response) {
         callback(data);
     });
 }
+
+var getApplication = function(callback, app){
+  client.get("https://api.infojobs.net/api/5/application" + app, args, function (data, response) {
+      callback(data);
+  });
+}
+
+var getApplications = function(callback){
+  client.get("https://api.infojobs.net/api/5/application", args, function (data, response) {
+      callback(data);
+  });
+}
+
+var postApplication = function(callback, offer){
+  client.post("https://api.infojobs.net/api/4/offer/" + offer + "/application", args, function (data, response) {
+      console.log(data);
+      //callback(data);
+  });
+}
+
+var getQuestions = function(callback, offer){
+  client.get("https://api.infojobs.net/api/1/offer/" + offer + "/question", args, function (data, response) {
+      callback(data);
+  });
+}
+
 
 
 module.exports.getCvs = getCvs;
@@ -118,4 +150,9 @@ module.exports.getExperience = getExperience;
 module.exports.getFutureJob = getFutureJob;
 module.exports.getPersonalData = getPersonalData;
 module.exports.setExperience = setExperience;
+module.exports.getSkills = getSkills;
 module.exports.getOffers = getOffers;
+module.exports.getQuestions = getQuestions;
+module.exports.getApplications = getApplications;
+module.exports.getApplication = getApplication;
+module.exports.postApplication = postApplication;
