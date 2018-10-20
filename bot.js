@@ -12,8 +12,10 @@ var cvs = [];
 var exps = [];
 var edus = [];
 var offers = [];
+var applications = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
+var currentApplication = 0;
 
 var states = {
   companyEdit : false,
@@ -36,6 +38,17 @@ var resetStates = function(){
     apply : false
   };
 }
+
+bot.start((ctx) => {
+  return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
+     Markup.keyboard([
+     Markup.callbackButton('📄  CV', '📄  CV'),
+     Markup.callbackButton('💾 Data', '💾 Data'),
+     Markup.callbackButton('🔎 Search', '🔎 Search'),
+     Markup.callbackButton('My Applications',' My Applications'),
+     Markup.callbackButton('🏠', '🏠')
+  ]).extra())
+})
 
 bot.hears('📄  CV', (ctx) => {
       api.getCvs(function(res) {
@@ -96,18 +109,26 @@ bot.action(/.+/, (ctx) => {
         )
       }
       else   if (ctx.match[0].startsWith('app'))  {
-          currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
-          ctx.reply('Select item to modify',
-          Markup.keyboard([
-              Markup.callbackButton('🎓 Degree', '🎓 Degree'),
-              Markup.callbackButton('🏛 Institution', '🏛 Institution'),
-              Markup.callbackButton('🔙', '🔙'),
-              ])
-            .oneTime()
-            .resize()
-            .extra()
-          )
+          currentApplication = ctx.match[0].substr( ctx.match[0].length - 1);
+          //New Application
+          //CV Code
+          api.getCvs(function(res) {
+              var arr = [];
+              for (var i = 0; i < res.length; i++)
+              {
+                var Principal = res[i].principal ? 'Yes' : 'No';
+                arr.push(Markup.callbackButton(" - CV Name: " + res[i].name +  " Is CV Principal: " + Principal, "cv" + i, res.code));
+                cvs.push(res[i].code);
+              }
+              ctx.reply("Select CV to apply", Extra.HTML().markup((m) =>
+                  m.inlineKeyboard(arr)
+            ))
+          });
         }
+          //Open Questions
+          //Killer Questions
+          //)
+        //}
 })
 
 bot.hears('🏭 Company', (ctx, next) => {
@@ -115,15 +136,7 @@ bot.hears('🏭 Company', (ctx, next) => {
   ctx.reply((exps[currentExperienceEdit] != null ? exps[currentExperienceEdit].company : 'a'))
 })
 
-bot.start((ctx) => {
-  return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
-     Markup.keyboard([
-     Markup.callbackButton('📄  CV', '📄  CV'),
-     Markup.callbackButton('💾 Data', '💾 Data'),
-     Markup.callbackButton('🔎 Search', '🔎 Search'),
-     Markup.callbackButton('🏠', '🏠')
-  ]).extra())
-})
+
 
 bot.hears('🔙', (ctx) => {
   return ctx.reply('This is your CV, here you can modify it!', Markup
@@ -202,18 +215,7 @@ bot.hears('📖 Languages', (ctx) => {
     }
 
   },cvs[currentCV]);
-
-    /*return ctx.reply('How many languages you know?',
-    Markup.keyboard([
-        Markup.callbackButton('🈵 Language', '🈵 Language'),
-        Markup.callbackButton('🏆 Level', '🏆 Level'),
-        Markup.callbackButton('🔙', '🔙'),
-        ])
-      .oneTime()
-      .resize()
-      .extra()
-    )*/
-    })
+})
 
 bot.hears('🏅 Knowledge', (ctx) => {
       return ctx.reply('Did you have any uncommon knowledge? Tell us!',
@@ -226,7 +228,7 @@ bot.hears('🏅 Knowledge', (ctx) => {
         .resize()
         .extra()
         )
-      })
+})
 
 bot.hears('🗄 Extra information', (ctx) => {
     return ctx.reply('Share extra information to know more about you!', Markup
@@ -271,12 +273,34 @@ bot.hears('💾 Data', (ctx) => {
    states.search = true;
  })
 
+ bot.hears('My Applications', (ctx) => {
+       api.getApplications(function(res) {
+         applications = res.applications;
+         if (res.applications.length == 0) return ctx.reply("No applications found");
+         for (var i = 0; i < res.applications.length; i++)
+         {
+           app = [];
+           api.getApplication(function(res) {
+             app = res;
+           }, res.applications[i].code);
+           ctx.reply("Offer: " + app.jobOffer.title + "\n" +
+                     "Company: " + app.jobOffer.company + "\n" +
+                     "City: " + res.experience[i].startingDate + "\n" +
+                     "Status: " + (app.rejected != false ? "Not rejected" : "Rejected" ) + "\n", Extra.HTML().markup((m) =>
+               m.inlineKeyboard([
+                 m.callbackButton('Edit','ex' + i)])
+             ))
+         }
+       });
+ })
+
 bot.hears('🏠', (ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
        Markup.keyboard([
        Markup.callbackButton('📄 CV', '📄 CV'),
        Markup.callbackButton('💾 Data', '💾 Data'),
        Markup.callbackButton('🔎 Search', '🔎 Search'),
+       Markup.callbackButton('My Applications',' My Applications'),
        Markup.callbackButton('🏠', '🏠')
     ]).extra()
   )
