@@ -173,7 +173,7 @@ bot.action(/.+/, (ctx) => {
       .extra()
     )
     } else if (ctx.match[0].startsWith('know'))  {
-        currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
+      currentKnowledgeEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify',
         Markup.keyboard([
         Markup.callbackButton('🧠 Skill', '🧠 Skill'),
@@ -446,13 +446,18 @@ bot.hears('📖 Languages', (ctx) => {
 
 bot.hears('🏅 Knowledge', (ctx) => {
     api.getSkills(function(res) {
-      edus = res.expertise;
-      console.log(res);
-        ctx.reply("Skill: " + res.expertise[i].skill + "\n" +
+      knw = res.expertise;
+      if (res.expertise != null && res.expertise.length > 0){
+        for (var i = 0; i < res.expertise.length ; i++){
+          ctx.reply("Skill: " + res.expertise[i].skill + "\n" +
                   "Level: " + res.expertise[i].level + "\n", Extra.HTML().markup((m) =>
             m.inlineKeyboard([
-              m.callbackButton('Edit','know' + i)])
+              m.callbackButton('Edit','know' +i )])
           ))
+        }
+        
+      }
+        
       },cvs[currentCV]);
       })
 
@@ -601,6 +606,7 @@ bot.on('text', (ctx) => {
 
 
   if (states.skillEdit){
+    console.log(currentKnowledgeEdit)
     knw[currentKnowledgeEdit].skill = ctx.message.text;
     api.setSkills(cvs[currentCV], knw[currentKnowledgeEdit]);
   }
