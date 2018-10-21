@@ -101,6 +101,14 @@ var getFutureJob = function(callback, cvCode){
         callback(data);
     });
 }
+var setFutureJob = function(cvCode, futurejob){
+    args.data = futurejob;
+    console.log(cvCode)
+    console.log(futurejob)
+    client.put("https://api.infojobs.net/api/4/curriculum/" + cvCode + "/futurejobs", args, function (data, response) {
+        console.log(data)
+    });
+}
 var getPersonalData = function(callback, cvCode){
     client.get("https://api.infojobs.net/api/2/curriculum/" + cvCode + "/personalData", args, function (data, response) {
         callback(data);
