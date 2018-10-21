@@ -534,15 +534,15 @@ bot.on('text', (ctx) => {
 
   if (states.workingEdit){
     jbs[currentJobsEdit].working = ctx.message.text;
-    api.setFuturJob(cvs[currentCV], jbs[currentJobsEdit]);
+    api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
   }
   if (states.preferredPositionEdit){
     jbs[currentJobsEdit].preferredPosition = ctx.message.text;
-    api.setFuturJob(cvs[currentCV], jbs[currentJobsEdit]);
+    api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
   }
   if (states.employmentStatusEdit){
     jbs[currentJobsEdit].employmentStatus = ctx.message.text;
-    api.setFuturJob(cvs[currentCV], jbs[currentJobsEdit]);
+    api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
   }
 
         
