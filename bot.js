@@ -13,10 +13,12 @@ var exps = [];
 var edus = [];
 var offers = [];
 var applications = [];
+var questions = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
 var currentApplication = 0;
-var apply_data = [];
+var currentOffer = 0;
+var apply_data = new Object();
 var applaying = false;
 
 var states = {
@@ -82,11 +84,6 @@ bot.action(/.+/, (ctx) => {
         .resize()
         .extra())
     }, cvs[0]);
-  } else if (ctx.match[0].startsWith('app_cv'))
-  {
-    currentCV = ctx.match[0].substr(ctx.match[0].length - 1);
-    //Get Questions
-    api.getQuestions
   } else   if (ctx.match[0].startsWith('ex'))  {
       currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
       ctx.reply('Select item to modify', Markup
@@ -99,8 +96,7 @@ bot.action(/.+/, (ctx) => {
         .resize()
         .extra()
       )
-    }
-    else   if (ctx.match[0].startsWith('ed'))  {
+    } else if (ctx.match[0].startsWith('ed'))  {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify',
         Markup.keyboard([
@@ -112,25 +108,25 @@ bot.action(/.+/, (ctx) => {
           .resize()
           .extra()
         )
-      }
-      else   if (ctx.match[0].startsWith('app'))  {
+      } else if (ctx.match[0].startsWith('apy'))  {
           currentApplication = ctx.match[0].substr( ctx.match[0].length - 1);
           //New Application
           //CV Code
+          cvs = [];
           apply_data = [];
           api.getCvs(function(res) {
               var arr = [];
               for (var i = 0; i < res.length; i++)
               {
                 var Principal = res[i].principal ? 'Yes' : 'No';
-                arr.push(Markup.callbackButton(" - CV Name: " + res[i].name +  " Is CV Principal: " + Principal, "app_cv" + i, res.code));
+                arr.push(Markup.callbackButton(" - CV Name: " + res[i].name +  " Is CV Principal: " + Principal, "apcv" + i, res.code));
+                cvs.push(res[i].code);
               }
               ctx.reply("Select CV to apply", Extra.HTML().markup((m) =>
                   m.inlineKeyboard(arr)
             ))
           });
-        }
-    else   if (ctx.match[0].startsWith('lan'))  {
+    } else if (ctx.match[0].startsWith('lan'))  {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify',
         Markup.keyboard([
@@ -142,8 +138,7 @@ bot.action(/.+/, (ctx) => {
       .resize()
       .extra()
     )
-      }
-    else   if (ctx.match[0].startsWith('know'))  {
+    } else if (ctx.match[0].startsWith('know'))  {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify',
         Markup.keyboard([
@@ -155,8 +150,7 @@ bot.action(/.+/, (ctx) => {
         .resize()
         .extra()
         )
-      }
-    else   if (ctx.match[0].startsWith('xtra'))  {
+    } else if (ctx.match[0].startsWith('xtra'))  {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify', Markup
         .keyboard([
@@ -167,9 +161,8 @@ bot.action(/.+/, (ctx) => {
         .oneTime()
         .resize()
         .extra()
-    )
-      }
-    else   if (ctx.match[0].startsWith('employ'))  {
+      )
+      } else if (ctx.match[0].startsWith('employ'))  {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify', Markup
         .keyboard([
@@ -194,26 +187,29 @@ bot.action(/.+/, (ctx) => {
             .extra()
           )
         }
-        else if (ctx.match[0].startsWith('app_cv')) {
+        else if (ctx.match[0].startsWith('apcv')) {
           //Get Questions
           currentCV = ctx.match[0].substr( ctx.match[0].length - 1);
           apply_data.curriculumCode = cvs[currentCV];
+          console.log(apply_data);
           api.getQuestions(function(res) {
-              var arr = [];
-              for (var i = 0; i < res.length; i++)
-              {
-                var Principal = res[i].principal ? 'Yes' : 'No';
-                arr.push(Markup.callbackButton(" - CV Name: " + res[i].name +  " Is CV Principal: " + Principal, "app_cv" + i, res.code));
+              console.log(res);
+              if (res.openQuestions.length == 0 && res.killerQuestions.length == 0) {
+                apply_data.openQuestions = res.openQuestions;
+                apply_data.killerQuestions = res.killerQuestions;
+                console.log(apply_data);
+                 var jsonString = JSON.stringify(apply_data);
+                api.postApplication(offers[currentApplication].id,jsonString);
               }
-              ctx.reply("Select CV to apply", Extra.HTML().markup((m) =>
-                  m.inlineKeyboard(arr)
-            ))
-          });
+          },offers[currentApplication].id);
+        }  else if (ctx.match[0].startsWith('apof'))
+        {
+          currentOffer = ctx.match[0].substr(ctx.match[0].length - 1);
+          //Get Questions
+            api.getQuestions(function(res) {
+
+          },offers[currentOffer]);
         }
-          //Open Questions
-          //Killer Questions
-          //)
-        //}
 })
 
 
@@ -388,45 +384,21 @@ bot.hears('📑 Employment status', (ctx) => {
  });
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- bot.hears('🔎 Search', (ctx) => {
+bot.hears('🔎 Search', (ctx) => {
    ctx.reply("What jobs are you looking for?");
    states.search = true;
  })
 
- bot.hears('My Applications', (ctx) => {
+bot.hears('My Applications', (ctx) => {
        api.getApplications(function(res) {
          applications = res.applications;
          if (res.applications.length == 0) return ctx.reply("No applications found");
          for (var i = 0; i < res.applications.length; i++)
          {
-           app = [];
-           api.getApplication(function(res) {
-             app = res;
-           }, res.applications[i].code);
-           ctx.reply("Offer: " + app.jobOffer.title + "\n" +
-                     "Company: " + app.jobOffer.company + "\n" +
-                     "City: " + res.experience[i].startingDate + "\n" +
-                     "Status: " + (app.rejected != false ? "Not rejected" : "Rejected" ) + "\n", Extra.HTML().markup((m) =>
+           ctx.reply("Offer: " + res.applications[i].jobOffer.title + "\n" +
+                     "Company: " + res.applications[i].jobOffer.company + "\n" +
+                     "City: " + res.applications[i].jobOffer.city + "\n" +
+                     "Status: " + (res.applications[i].rejected == false ? "Not rejected" : "Rejected" ) + "\n", Extra.HTML().markup((m) =>
                m.inlineKeyboard([
                  m.callbackButton('Edit','ex' + i)])
              ))
@@ -462,7 +434,7 @@ bot.on('text', (ctx) => {
                   "City: " + res.offers[i].city + "\n" +
                   "Experience min: " + (res.offers[i].experienceMin.value || '') + "\n" , Extra.HTML().markup((m) =>
             m.inlineKeyboard([
-              m.callbackButton('Apply','app' + i)])
+              m.callbackButton('Apply','apy' + i)])
           ))
       }
     },ctx.message.text);
