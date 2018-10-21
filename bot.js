@@ -218,11 +218,19 @@ bot.action(/.+/, (ctx) => {
           currentCV = ctx.match[0].substr( ctx.match[0].length - 1);
           apply_data.curriculumCode = cvs[currentCV];
           api.getQuestions(function(res) {
-              if (res.openQuestions.length == 0 && res.killerQuestions.length == 0) {
-                 var data = {curriculumCode:cvs[currentCV],openQuestions:[], killerQuestions:[] };
-                 var jsonString = JSON.stringify(data);
-                api.postApplication(offers[currentApplication].id,jsonString);
-              }
+              //if (res.openQuestions.length == 0 && res.killerQuestions.length == 0) {
+                var data = {curriculumCode:cvs[currentCV]};
+                api.postApplication(offers[currentApplication].id,data, function(res){
+                  if (res != null && res.error_description){
+                    var err = res.error_description;
+                    if (err.startsWith("The answer is not correct")){
+                      err = "This application must be done via websitre or mobileapp."
+                    }
+                    ctx.reply(err);
+                  }
+                });
+
+              //}
           },offers[currentApplication].id);
         }  else if (ctx.match[0].startsWith('apof'))
         {
@@ -565,7 +573,7 @@ bot.on('text', (ctx) => {
     api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
   }
 
-        
+
   else if (states.search){
     api.getOffers(function(res) {
       if (res.offers.length == 0)

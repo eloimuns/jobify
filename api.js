@@ -1,5 +1,5 @@
 'use strict';
-var token = "47260b62-468f-444e-852a-f679ef3b2b19";
+var token = "37add139-dc30-429e-90ed-a754facc143f";
 var bodyParser = require('body-parser');
 var path = require("path");
 var express = require('express');
@@ -147,12 +147,12 @@ var getApplications = function(callback){
   });
 }
 
-var postApplication = function(offer, apply_data){
+var postApplication = function(offer, apply_data, callback){
   args.data = apply_data;
-  console.log(apply_data);
+  console.log(args.data);
   client.post("https://api.infojobs.net/api/4/offer/" + offer + "/application", args, function (data, response) {
       console.log(data);
-      //callback(data);
+      callback(data);
   });
 }
 
