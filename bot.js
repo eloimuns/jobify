@@ -123,8 +123,8 @@ bot.action(/.+/, (ctx) => {
       ctx.reply('Select item to modify', Markup
         .keyboard([
           ['🏭 Company', '👨‍💼 Job title'],
-          ['Starting date', 'Finish date'],
-          ['On course', '🔙']
+          ['📆 Starting date', '📆 Finish date'],
+          ['⌛️ On course', '🔙']
         ])
         .oneTime()
         .resize()
@@ -135,7 +135,7 @@ bot.action(/.+/, (ctx) => {
         ctx.reply('Select item to modify',
         Markup.keyboard([
           ['🎓 Degree', '🏛 Institution'],
-          ['Starting date', 'Finishing date'],
+          ['📆 Starting date', '📆 Finishing date'],
           ['Still enrolled', '🔙'],
             ])
           .oneTime()
@@ -285,17 +285,17 @@ bot.hears('👨‍💼 Job title', (ctx, next) => {
   states.jobTitleEdit = true;
   ctx.reply('Input new data')
 })
-bot.hears('Starting date', (ctx, next) => {
+bot.hears('📆 Starting date', (ctx, next) => {
   resetStates();
   states.startDateEdit = true;
   ctx.reply('Input new data')
 })
-bot.hears('Finish date', (ctx, next) => {
+bot.hears('📆 Finish date', (ctx, next) => {
   resetStates();
   states.finishingDateEdit = true;
   ctx.reply('Input new data')
 })
-bot.hears('On course', (ctx, next) => {
+bot.hears('⌛️ On course', (ctx, next) => {
   resetStates();
   states.onCourseEdit = true;
   ctx.reply('Input new data')
@@ -314,12 +314,12 @@ bot.hears('🏛 Institution', (ctx, next) => {
   states.institutionNameEdit = true;
   ctx.reply('Input new data')
 })
-bot.hears('Starting date', (ctx, next) => {
+bot.hears('📆 Starting date', (ctx, next) => {
   resetStates();
   states.startingDateStdEdit = true;
   ctx.reply('Input new data')
 })
-bot.hears('Finishing date', (ctx, next) => {
+bot.hears('📆 Finishing date', (ctx, next) => {
   resetStates();
   states.finishingDateStdEdit = true;
   ctx.reply('Input new data')
@@ -431,7 +431,7 @@ bot.hears('📖 Languages', (ctx) => {
     skills = res.language;
 
     api.getDictonary(function(data){
-      if (res.language){      
+      if (res.language){
         for (var i = 0; i < res.language.length; i++)
         {
           var lang = null;
@@ -452,7 +452,7 @@ bot.hears('📖 Languages', (ctx) => {
         }
     }
     }, 'language')
-    
+
   },cvs[currentCV]);
 })
 
@@ -467,9 +467,9 @@ bot.hears('🏅 Knowledge', (ctx) => {
               m.callbackButton('Edit','know' +i )])
           ))
         }
-        
+
       }
-        
+
       },cvs[currentCV]);
       })
 
@@ -645,7 +645,7 @@ bot.on('text', (ctx) => {
       jbs[currentJobsEdit].employmentStatus = ctx.message.text;
       api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
     }
-    
+
   }
 
   else if (states.search){
