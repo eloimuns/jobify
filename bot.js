@@ -411,7 +411,6 @@ bot.hears('⭐️ Experience', (ctx) => {
 bot.hears('📚 Studies', (ctx) => {
   api.getEducations(function(res) {
     edus = res.education;
-    console.log(res);
     for (var i = 0; i < res.education.length; i++)
     {
       ctx.reply("Degree: " + res.education[i].courseCode + "\n" +
@@ -430,6 +429,7 @@ bot.hears('📚 Studies', (ctx) => {
 bot.hears('📖 Languages', (ctx) => {
   api.getSkills(function(res) {
     skills = res.language;
+
     api.getDictonary(function(data){
       if (res.language){      
         for (var i = 0; i < res.language.length; i++)

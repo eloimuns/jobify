@@ -77,9 +77,7 @@ var getEducation = function(callback, cvCode, education){
 
 var setEducation = function(cvCode, education){
     args.data = education;
-    console.log(cvCode)
-    console.log(education)
-    client.put("https://api.infojobs.net/api/1/curriculum/" + cvCode + "/education", args, function (data, response) {
+    client.put("https://api.infojobs.net/api/2/curriculum/" + cvCode + "/education", args, function (data, response) {
         console.log(data)
     });
 }
@@ -97,7 +95,6 @@ var getExperience = function(callback, cvCode, experience){
 
 var setExperience = function(cvCode, experience){
     args.data = experience;
-    console.log(cvCode)
     console.log(experience)
     client.put("https://api.infojobs.net/api/4/curriculum/" + cvCode + "/experience", args, function (data, response) {
         console.log(data)
