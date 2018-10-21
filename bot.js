@@ -428,19 +428,31 @@ bot.hears('📚 Studies', (ctx) => {
   })
 
 bot.hears('📖 Languages', (ctx) => {
-  api.getEducations(function(res) {
-    edus = res.education;
-    console.log(res);
-    for (var i = 0; i < res.education.length; i++)
-    {
-      ctx.reply("Language: " + res.education[i].courseCode + "\n" +
-                "Writing: " + res.education[i].startingDate + "\n" +
-                "Speaking: " + (res.education[i].FinishingDate || '') + "\n" +
-                "Reading: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
-          m.inlineKeyboard([
-            m.callbackButton('Edit','lan' + i)])
-        ))
+  api.getSkills(function(res) {
+    skills = res.language;
+    api.getDictonary(function(data){
+      if (res.language){      
+        for (var i = 0; i < res.language.length; i++)
+        {
+          var lang = null;
+          if (data){
+              for (var j = 0; j < data.length; j++){
+                if (data[j].id == res.language[i].id){
+                  lang = data[j].value
+                }
+              }
+          }
+          ctx.reply("Language: " + lang + "\n" +
+                    "Writing: " + res.language[i].writing + "\n" +
+                    "Speaking: " + (res.language[i].speaking || '') + "\n" +
+                    "Reading: " + res.language[i].reading + "\n", Extra.HTML().markup((m) =>
+              m.inlineKeyboard([
+                m.callbackButton('Edit','lan' + i)])
+            ))
+        }
     }
+    }, 'language')
+    
   },cvs[currentCV]);
 })
 
@@ -490,7 +502,7 @@ bot.hears('🗄 Extra information', (ctx) => {
 
 bot.hears('📑 Employment status', (ctx) => {
   api.getFutureJob(function(res) {
-    console.log(res);
+    jbs = res;
       ctx.reply("Currently working: " + res.working + "\n" +
                 "Preferred position: " + res.preferredPosition + "\n" +
                 "Employment status: " + res.employmentStatus + "\n", Extra.HTML().markup((m) =>
@@ -629,8 +641,11 @@ bot.on('text', (ctx) => {
     api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
   }
   if (states.employmentStatusEdit){
-    jbs[currentJobsEdit].employmentStatus = ctx.message.text;
-    api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
+    if (jbs.length > 0){
+      jbs[currentJobsEdit].employmentStatus = ctx.message.text;
+      api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
+    }
+    
   }
 
   else if (states.search){
