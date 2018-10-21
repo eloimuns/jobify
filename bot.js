@@ -352,10 +352,10 @@ bot.hears('📚 Studies', (ctx) => {
                 "School: " + res.education[i].institutionName + "\n" +
                 "Starting date: " + res.education[i].startingDate + "\n" +
                 "Finishing date: " + (res.education[i].finishingDate || '') + "\n" +
-                "Still enrolled: " + res.education[i].stillEnrolled + "\n"
-                /*Extra.HTML().markup((m) =>
+                "Still enrolled: " + res.education[i].stillEnrolled + "\n",
+                Extra.HTML().markup((m) =>
                 m.inlineKeyboard([
-                m.callbackButton('Edit','ed' + i)]))*/
+                m.callbackButton('Edit','ed' + i)]))
         )
     }
   },cvs[currentCV]);
@@ -505,6 +505,26 @@ bot.on('text', (ctx) => {
     exps[currentExperienceEdit].onCourse = ctx.message.text;
     api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);
   }
+  if (states.courseCodeEdit){
+    edus[currentExperienceEdit].courseCode = ctx.message.text;
+    api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
+  }
+  if (states.institutionNameEdit){
+    edus[currentExperienceEdit].institutionName = ctx.message.text;
+    api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
+  }
+  if (states.startingDateStdEdit){
+    edus[currentExperienceEdit].startingDate = ctx.message.text;
+    api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
+  }
+  if (states.finishingDateStdEdit){
+    edus[currentExperienceEdit].finishingDate = ctx.message.text;
+    api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
+  }
+  if (states.stillEnrolledEdit){
+    edus[currentExperienceEdit].stillEnrolled = ctx.message.text;
+    api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
+  }
   else if (states.search){
     api.getOffers(function(res) {
       if (res.offers.length == 0)
@@ -524,6 +544,7 @@ bot.on('text', (ctx) => {
       }
     },ctx.message.text);
   }
+  resetStates();
 })
 
 bot.startPolling();
