@@ -191,14 +191,10 @@ bot.action(/.+/, (ctx) => {
           //Get Questions
           currentCV = ctx.match[0].substr( ctx.match[0].length - 1);
           apply_data.curriculumCode = cvs[currentCV];
-          console.log(apply_data);
           api.getQuestions(function(res) {
-              console.log(res);
               if (res.openQuestions.length == 0 && res.killerQuestions.length == 0) {
-                apply_data.openQuestions = res.openQuestions;
-                apply_data.killerQuestions = res.killerQuestions;
-                console.log(apply_data);
-                 var jsonString = JSON.stringify(apply_data);
+                 var data = {curriculumCode:cvs[currentCV],openQuestions:[], killerQuestions:[] };
+                 var jsonString = JSON.stringify(data);
                 api.postApplication(offers[currentApplication].id,jsonString);
               }
           },offers[currentApplication].id);
