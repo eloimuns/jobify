@@ -129,6 +129,14 @@ var getSkills = function(callback, cvCode){
     });
 }
 
+var setSkills = function(cvCode, skill){
+    args.data = skill;
+    console.log(cvCode)
+    console.log(skill)
+    client.put("https://api.infojobs.net/api/2/curriculum/" + cvCode + "/skill", args, function (data, response) {
+        console.log(data)
+    });
+}
 var getOffers = function(callback, word){
     client.get("https://api.infojobs.net/api/7/offer?q=" + word + "&maxResults=10", args, function (data, response) {
         callback(data);
@@ -177,6 +185,7 @@ module.exports.setFutureJob = setFutureJob;
 module.exports.getPersonalData = getPersonalData;
 module.exports.setExperience = setExperience;
 module.exports.getSkills = getSkills;
+module.exports.setSkills = setSkills;
 module.exports.getOffers = getOffers;
 module.exports.getQuestions = getQuestions;
 module.exports.getApplications = getApplications;

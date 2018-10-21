@@ -12,12 +12,14 @@ var cvs = [];
 var exps = [];
 var edus = [];
 var offers = [];
-var jbs =[];
+var jbs = [];
+var knw = [];
 var applications = [];
 var questions = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
 var currentStudiesEdit = 0;
+var currentKnowledgeEdit = 0;
 var currentJobsEdit = 0;
 
 var currentApplication = 0;
@@ -37,6 +39,9 @@ var states = {
   startingDateStdEdit : false,
   finishingDateStdEdit : false,
   stillEnrolledEdit : false,
+
+  skillEdit : false,
+  levelEdit : false,
 
   workingEdit :false,
   preferredPositionEdit : false,
@@ -59,6 +64,9 @@ var resetStates = function(){
     startingDateStdEdit : false,
     finishingDateStdEdit : false,
     stillEnrolledEdit : false,
+
+    skillEdit : false,
+    levelEdit : false,
 
     workingEdit :false,
     preferredPositionEdit : false,
@@ -322,6 +330,31 @@ bot.hears('Still enrolled', (ctx, next) => {
   ctx.reply('Input new data')
 })
 
+
+
+
+
+
+
+
+//Knowledge puts
+bot.hears('🧠 Skill', (ctx, next) => {
+  resetStates();
+  states.skillEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('🏆 Level', (ctx, next) => {
+  resetStates();
+  states.levelEdit = true;
+  ctx.reply('Input new data')
+})
+
+
+
+
+
+
+
 //Employment Status puts
 bot.hears('Currently working', (ctx, next) => {
   resetStates();
@@ -415,14 +448,11 @@ bot.hears('🏅 Knowledge', (ctx) => {
     api.getSkills(function(res) {
       edus = res.expertise;
       console.log(res);
-      for (var i = 0; i < res.expertise.length; i++)
-      {
         ctx.reply("Skill: " + res.expertise[i].skill + "\n" +
                   "Level: " + res.expertise[i].level + "\n", Extra.HTML().markup((m) =>
             m.inlineKeyboard([
               m.callbackButton('Edit','know' + i)])
           ))
-      }
       },cvs[currentCV]);
       })
 
@@ -568,6 +598,21 @@ bot.on('text', (ctx) => {
     edus[currentExperienceEdit].stillEnrolled = ctx.message.text;
     api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
   }
+
+
+  if (states.skillEdit){
+    knw[currentKnowledgeEdit].skill = ctx.message.text;
+    api.setSkills(cvs[currentCV], knw[currentKnowledgeEdit]);
+  }
+  if (states.levelEdit){
+    knw[currentExperienceEdit].level = ctx.message.text;
+    api.setSkills(cvs[currentCV], knw[currentExperienceEdit]);
+  }
+
+
+
+
+
 
   if (states.workingEdit){
     jbs[currentJobsEdit].working = ctx.message.text;
