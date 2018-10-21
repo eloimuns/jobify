@@ -81,7 +81,7 @@ bot.start((ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
      Markup.keyboard([
      ['📄 CV', '💾 Data'],
-     ['🔎 Search', 'My Applications'],
+     ['🔎 Search', '📬 My Applications'],
      ['🏠']
   ]).extra())
 })
@@ -543,7 +543,7 @@ bot.hears('🔎 Search', (ctx) => {
    states.search = true;
  })
 
-bot.hears('My Applications', (ctx) => {
+bot.hears('📬 My Applications', (ctx) => {
        api.getApplications(function(res) {
          applications = res.applications;
          if (res.applications.length == 0) return ctx.reply("No applications found");
@@ -564,7 +564,7 @@ bot.hears('🏠', (ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
      Markup.keyboard([
      ['📄 CV', '💾 Data'],
-     ['🔎 Search', 'My Applications'],
+     ['🔎 Search', '📬 My Applications'],
      ['🏠']
   ]).extra())
 })
