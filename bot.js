@@ -164,8 +164,8 @@ bot.action(/.+/, (ctx) => {
         currentExperienceEdit = ctx.match[0].substr( ctx.match[0].length - 1);
         ctx.reply('Select item to modify',
         Markup.keyboard([
-        ['🈵 Language', 'Writing'],
-        ['Speaking', 'Reading'],
+        ['🈵 Language', '📝 Writing'],
+        ['📢 Speaking', '📕 Reading'],
         ['🔙']
         ])
       .oneTime()
