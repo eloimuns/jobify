@@ -131,8 +131,8 @@ var getApplications = function(callback){
   });
 }
 
-var postApplication = function(callback, offer){
-  args.data = offer;
+var postApplication = function(offer, data){
+  args.data = data;
   client.post("https://api.infojobs.net/api/4/offer/" + offer + "/application", args, function (data, response) {
       console.log(data);
       //callback(data);
