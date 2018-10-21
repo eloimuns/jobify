@@ -12,11 +12,13 @@ var cvs = [];
 var exps = [];
 var edus = [];
 var offers = [];
+var jbs =[];
 var applications = [];
 var questions = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
 var currentStudiesEdit = 0;
+var currentJobsEdit = 0;
 
 var currentApplication = 0;
 var currentOffer = 0;
@@ -36,6 +38,10 @@ var states = {
   finishingDateStdEdit : false,
   stillEnrolledEdit : false,
 
+  workingEdit :false,
+  preferredPositionEdit : false,
+  employmentStatusEdit : false,
+
   search : false,
   apply : false,
 };
@@ -53,6 +59,10 @@ var resetStates = function(){
     startingDateStdEdit : false,
     finishingDateStdEdit : false,
     stillEnrolledEdit : false,
+
+    workingEdit :false,
+    preferredPositionEdit : false,
+    employmentStatusEdit : false,
 
     search : false,
     apply : false
@@ -304,7 +314,22 @@ bot.hears('Still enrolled', (ctx, next) => {
   ctx.reply('Input new data')
 })
 
-
+//Employment Status puts
+bot.hears('Currently working', (ctx, next) => {
+  resetStates();
+  states.workingEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('Prefered position', (ctx, next) => {
+  resetStates();
+  states.preferredPositionEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('🛠 Employment status', (ctx, next) => {
+  resetStates();
+  states.employmentStatusEdit = true;
+  ctx.reply('Input new data')
+})
 
 
 
@@ -525,6 +550,22 @@ bot.on('text', (ctx) => {
     edus[currentExperienceEdit].stillEnrolled = ctx.message.text;
     api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
   }
+
+
+  if (states.workingEdit){
+    jbs[currentJobsEdit].working = ctx.message.text;
+    api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
+  }
+  if (states.preferredPositionEdit){
+    jbs[currentJobsEdit].preferredPosition = ctx.message.text;
+    api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
+  }
+  if (states.employmentStatusEdit){
+    jbs[currentJobsEdit].employmentStatus = ctx.message.text;
+    api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
+  }
+
+        
   else if (states.search){
     api.getOffers(function(res) {
       if (res.offers.length == 0)
