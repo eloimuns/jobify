@@ -431,20 +431,26 @@ bot.hears('🗄 Extra information', (ctx) => {
   api.getPersonalData(function(res) {
     edus = res.personalData;
     console.log(res);
-    for (var i = 0; i < res.nationalities.length; i++){
-      str = str + res.nationalities.length; i++;
-    }
-    for (var i = 0; i < res.driverLicenses.length; i++);
+    if (res.nationalities)
     {
-      str = str + res.driverLicenses[i] + ", ";
+      for (var i = 0; i < res.nationalities.length; i++){
+        str = str + res.nationalities.length; i++;
+      }
+    }
+    if (res.driverLicenses)
+    {
+      for (var i = 0; i < res.driverLicenses.length; i++);
+      {
+        str = str + res.driverLicenses[i] + ", ";
+      }
     }
     str = str + "\n" + res.vehicleOwner;
     str = str + "\n" + "Freelance: " + res.freelance + "\n";
-    ctx.reply(str, Extra.HTML().markup((m) =>
+    ctx.reply(str /*,Extra.HTML().markup((m) =>
           m.inlineKeyboard([
             m.callbackButton('Edit','xtra' + i)])
-          ))
-    });
+          )*/)
+    },cvs[currentCV]);
 })
 
 bot.hears('📑 Employment status', (ctx) => {
@@ -543,8 +549,12 @@ bot.on('text', (ctx) => {
     api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
   }
   if (states.institutionNameEdit){
-    edus[currentExperienceEdit].institutionName = ctx.message.text;
-    api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
+    api.getEducation(function(res){
+      res.institutionName = ctx.message.text
+      api.setEducation(cvs[currentCV], res);
+    }, cvs[currentCV], edus[currentExperienceEdit].id)
+    //edus[currentExperienceEdit].institutionName = ctx.message.text;
+
   }
   if (states.startingDateStdEdit){
     edus[currentExperienceEdit].startingDate = ctx.message.text;
@@ -559,7 +569,6 @@ bot.on('text', (ctx) => {
     api.setEducation(cvs[currentCV], edus[currentExperienceEdit]);
   }
 
-
   if (states.workingEdit){
     jbs[currentJobsEdit].working = ctx.message.text;
     api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
@@ -572,7 +581,6 @@ bot.on('text', (ctx) => {
     jbs[currentJobsEdit].employmentStatus = ctx.message.text;
     api.setFutureJob(cvs[currentCV], jbs[currentJobsEdit]);
   }
-
 
   else if (states.search){
     api.getOffers(function(res) {
