@@ -1,5 +1,5 @@
 'use strict';
-var token = "6d2ecb9c-96bf-4a67-9442-a61a65a460e0";
+var token = "47260b62-468f-444e-852a-f679ef3b2b19";
 var bodyParser = require('body-parser');
 var path = require("path");
 var express = require('express');
