@@ -44,11 +44,9 @@ var resetStates = function(){
 bot.start((ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
      Markup.keyboard([
-     Markup.callbackButton('📄 CV', '📄 CV'),
-     Markup.callbackButton('💾 Data', '💾 Data'),
-     Markup.callbackButton('🔎 Search', '🔎 Search'),
-     Markup.callbackButton('My Applications',' My Applications'),
-     Markup.callbackButton('🏠', '🏠')
+     ['📄 CV', '💾 Data'],
+     ['🔎 Search', 'My Applications'],
+     ['🏠']
   ]).extra())
 })
 
@@ -275,7 +273,7 @@ bot.hears('⭐️ Experience', (ctx) => {
                 "Finishing date: " + (res.experience[i].FinishingDate || '') + "\n" +
                 "On course: " + res.experience[i].onCourse + "\n", Extra.HTML().markup((m) =>
           m.inlineKeyboard([
-            m.callbackButton('Edit','ex' + i)])
+          m.callbackButton('Edit','ex' + i)])
         ))
     }
   },cvs[currentCV]);
@@ -317,13 +315,13 @@ bot.hears('📖 Languages', (ctx) => {
 })
 
 bot.hears('🏅 Knowledge', (ctx) => {
-    api.getEducations(function(res) {
-      edus = res.education;
+    api.getSkills(function(res) {
+      edus = res.expertise;
       console.log(res);
-      for (var i = 0; i < res.education.length; i++)
+      for (var i = 0; i < res.expertise.length; i++)
       {
-        ctx.reply("Skill: " + res.education[i].courseCode + "\n" +
-                  "Level: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+        ctx.reply("Skill: " + res.expertise[i].skill + "\n" +
+                  "Level: " + res.expertise[i].level + "\n", Extra.HTML().markup((m) =>
             m.inlineKeyboard([
               m.callbackButton('Edit','know' + i)])
           ))
@@ -332,35 +330,35 @@ bot.hears('🏅 Knowledge', (ctx) => {
       })
 
 bot.hears('🗄 Extra information', (ctx) => {
-  api.getEducations(function(res) {
-    edus = res.education;
+  var str = "";
+  api.getPersonalData(function(res) {
+    edus = res.personalData;
     console.log(res);
-    for (var i = 0; i < res.education.length; i++)
+    for (var i = 0; i < res.nationalities.length; i++){
+      str = str + res.nationalities.length; i++;
+    }
+    for (var i = 0; i < res.driverLicenses.length; i++);
     {
-      ctx.reply("Driving license: " + res.education[i].courseCode + "\n" +
-                "Own vehicle: " + res.education[i].startingDate + "\n" +
-                "Nationality: " + (res.education[i].FinishingDate || '') + "\n" +
-                "Freelance: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+      str = str + res.driverLicenses[i] + ", ";
+    }
+    str = str + "\n" + res.vehicleOwner;
+    str = str + "\n" + "Freelance: " + res.freelance + "\n";
+    ctx.reply(str, Extra.HTML().markup((m) =>
           m.inlineKeyboard([
             m.callbackButton('Edit','xtra' + i)])
-        ))
-    }
-    },cvs[currentCV]); 
+          ))
+    });
 })
 
 bot.hears('📑 Employment status', (ctx) => {
-  api.getEducations(function(res) {
-    edus = res.education;
+  api.getFutureJob(function(res) {
     console.log(res);
-    for (var i = 0; i < res.education.length; i++)
-    {
-      ctx.reply("Currently working: " + res.education[i].courseCode + "\n" +
-                "Prefered position: " + (res.education[i].FinishingDate || '') + "\n" +
-                "Employment status: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
+      ctx.reply("Currently working: " + res.working + "\n" +
+                "Preferred position: " + res.preferredPosition + "\n" +
+                "Employment status: " + res.employmentStatus + "\n", Extra.HTML().markup((m) =>
           m.inlineKeyboard([
-            m.callbackButton('Edit','employ' + i)])
+          m.callbackButton('Edit','employ' + i)])
         ))
-    }
     },cvs[currentCV]);
 })
 
@@ -438,14 +436,11 @@ bot.hears('📑 Employment status', (ctx) => {
 
 bot.hears('🏠', (ctx) => {
   return ctx.reply('Welcome to the Jobyfy Bot main menu, what you need?',
-       Markup.keyboard([
-       Markup.callbackButton('📄 CV', '📄 CV'),
-       Markup.callbackButton('💾 Data', '💾 Data'),
-       Markup.callbackButton('🔎 Search', '🔎 Search'),
-       Markup.callbackButton('My Applications',' My Applications'),
-       Markup.callbackButton('🏠', '🏠')
-    ]).extra()
-  )
+     Markup.keyboard([
+     ['📄 CV', '💾 Data'],
+     ['🔎 Search', 'My Applications'],
+     ['🏠']
+  ]).extra())
 })
 
 bot.on('text', (ctx) => {

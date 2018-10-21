@@ -97,7 +97,7 @@ var setExperience = function(cvCode, experience){
 }
 
 var getFutureJob = function(callback, cvCode){
-    client.get("https://api.infojobs.net/api/4/curriculum/" + cvCode + "/futureJob", args, function (data, response) {
+    client.get("https://api.infojobs.net/api/4/curriculum/" + cvCode + "/futurejob", args, function (data, response) {
         callback(data);
     });
 }
