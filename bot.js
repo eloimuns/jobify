@@ -16,6 +16,8 @@ var applications = [];
 var questions = [];
 var currentCV = 0;
 var currentExperienceEdit = 0;
+var currentStudiesEdit = 0;
+
 var currentApplication = 0;
 var currentOffer = 0;
 var apply_data = new Object();
@@ -27,8 +29,15 @@ var states = {
   startDateEdit : false,
   finishingDateEdit : false,
   onCourseEdit : false,
+
+  courseCodeEdit : false,
+  institutionNameEdit : false,
+  startingDateStdEdit : false,
+  finishingDateStdEdit : false,
+  stillEnrolledEdit : false,
+
   search : false,
-  apply : false
+  apply : false,
 };
 
 var resetStates = function(){
@@ -38,6 +47,13 @@ var resetStates = function(){
     startDateEdit : false,
     finishingDateEdit : false,
     onCourseEdit : false,
+
+    courseCodeEdit : false,
+    institutionNameEdit : false,
+    startingDateStdEdit : false,
+    finishingDateStdEdit : false,
+    stillEnrolledEdit : false,
+
     search : false,
     apply : false
   };
@@ -90,7 +106,7 @@ bot.action(/.+/, (ctx) => {
         .keyboard([
           ['🏭 Company', '👨‍💼 Job title'],
           ['Starting date', 'Finish date'],
-          ['Still enrolled', '🔙']
+          ['On course', '🔙']
         ])
         .oneTime()
         .resize()
@@ -231,12 +247,67 @@ bot.action(/.+/, (ctx) => {
 
 
 
-
+//experience puts
 
 bot.hears('🏭 Company', (ctx, next) => {
+  resetStates();
   states.companyEdit = true;
-  ctx.reply((exps[currentExperienceEdit] != null ? exps[currentExperienceEdit].company : 'a'))
+  ctx.reply('Input new data')
 })
+bot.hears('👨‍💼 Job title', (ctx, next) => {
+  resetStates();
+  states.jobTitleEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('Starting date', (ctx, next) => {
+  resetStates();
+  states.startDateEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('Finish date', (ctx, next) => {
+  resetStates();
+  states.finishingDateEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('On course', (ctx, next) => {
+  resetStates();
+  states.onCourseEdit = true;
+  ctx.reply('Input new data')
+})
+
+
+//studies input
+
+bot.hears('🎓 Degree', (ctx, next) => {
+  resetStates();
+  states.courseCodeEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('🏛 Institution', (ctx, next) => {
+  resetStates();
+  states.institutionNameEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('Starting date', (ctx, next) => {
+  resetStates();
+  states.startingDateStdEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('Finishing date', (ctx, next) => {
+  resetStates();
+  states.finishingDateStdEdit = true;
+  ctx.reply('Input new data')
+})
+bot.hears('Still enrolled', (ctx, next) => {
+  resetStates();
+  states.stillEnrolledEdit = true;
+  ctx.reply('Input new data')
+})
+
+
+
+
+
 
 
 
@@ -262,7 +333,7 @@ bot.hears('⭐️ Experience', (ctx) => {
       ctx.reply("Company: " + res.experience[i].company + "\n" +
                 "Job title: " + res.experience[i].job + "\n" +
                 "Starting date: " + res.experience[i].startingDate + "\n" +
-                "Finishing date: " + (res.experience[i].FinishingDate || '') + "\n" +
+                "Finishing date: " + (res.experience[i].finishingDate || '') + "\n" +
                 "On course: " + res.experience[i].onCourse + "\n", Extra.HTML().markup((m) =>
           m.inlineKeyboard([
           m.callbackButton('Edit','ex' + i)])
@@ -280,11 +351,12 @@ bot.hears('📚 Studies', (ctx) => {
       ctx.reply("Degree: " + res.education[i].courseCode + "\n" +
                 "School: " + res.education[i].institutionName + "\n" +
                 "Starting date: " + res.education[i].startingDate + "\n" +
-                "Finishing date: " + (res.education[i].FinishingDate || '') + "\n" +
-                "Still enrolled: " + res.education[i].stillEnrolled + "\n", Extra.HTML().markup((m) =>
-          m.inlineKeyboard([
-          m.callbackButton('Edit','ed' + i)])
-        ))
+                "Finishing date: " + (res.education[i].finishingDate || '') + "\n" +
+                "Still enrolled: " + res.education[i].stillEnrolled + "\n"
+                /*Extra.HTML().markup((m) =>
+                m.inlineKeyboard([
+                m.callbackButton('Edit','ed' + i)]))*/
+        )
     }
   },cvs[currentCV]);
   })
@@ -411,9 +483,26 @@ bot.hears('🏠', (ctx) => {
   ]).extra())
 })
 
+
 bot.on('text', (ctx) => {
   if (states.companyEdit){
     exps[currentExperienceEdit].company = ctx.message.text;
+    api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);
+  }
+  if (states.jobTitleEdit){
+    exps[currentExperienceEdit].job = ctx.message.text;
+    api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);
+  }
+  if (states.startDateEdit){
+    exps[currentExperienceEdit].startingDate = ctx.message.text;
+    api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);
+  }
+  if (states.finishingDateEdit){
+    exps[currentExperienceEdit].finishingDate = ctx.message.text;
+    api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);
+  }
+  if (states.onCourseEdit){
+    exps[currentExperienceEdit].onCourse = ctx.message.text;
     api.setExperience(cvs[currentCV], exps[currentExperienceEdit]);
   }
   else if (states.search){
