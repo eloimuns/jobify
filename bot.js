@@ -470,9 +470,9 @@ bot.hears('📑 Employment status', (ctx) => {
  bot.hears('💾 Data', (ctx) => {
    api.getCandidate(function(res) {
        if (res.error != null) return ctx.reply("User not authenticated " + res.error);
-       ctx.reply("Name: " + res[0].fullName + "\n" +
-                 "City: " + res[0].city + "\n" +
-                 "Email: " + res[0].email + "\n" +
+       ctx.reply("Name: " + res.fullName + "\n" +
+                 "City: " + res.city + "\n" +
+                 "Email: " + res.email + "\n" +
                  "Public profile link: " + (res.publicprofilelink) + "\n");
  });
 })
